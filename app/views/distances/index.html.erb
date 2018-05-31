@@ -1,0 +1,34 @@
+<div class="row">
+  <div class="col-sm-6 offset-sm-3">
+    <h1>米其林服務網搜尋</h1>
+    <%= form_for @distance do |f| %>
+      <div class="form-group">
+        <%= f.text_field :address, placeholder: "請輸入搜雲地址或地標", class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.submit class: "btn btn-primary" %>
+      </div>
+    <% end %>
+
+    <hr>
+    <h3>搜尋紀錄</h3>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Address</th>
+          <th>No</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @distances.each do |distance| %>
+          <tr>
+            <td><%= distance.address %></td>
+            <td>
+              <%= link_to "show", distance_path(distance) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
