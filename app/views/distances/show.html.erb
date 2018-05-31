@@ -2,10 +2,10 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>Tag</th>
-      <th>No</th>
-      <th>Name</th>
-      <th>M</th>
+      <th>註記</th>
+      <th>編號</th>
+      <th>服務網名字</th>
+      <th>路徑距離</th>
     </tr>
   </thead>
   <tbody>
@@ -16,11 +16,16 @@
           <td class="text-danger"><%= list['no'] %></td>
           <td class="text-danger"><%= list['name'] %></td>
           <td class="text-danger"><%= list['distance'] / 1000 %>公里</td>
-        <% else %>
-          <td><%= list['tag'] %></td>
-          <td><%= list['no'] %></td>
-          <td><%= list['name'] %></td>
-          <td><%= list['distance'] / 1000 %>公里</td>
+        <% elsif list['tag'] == "無" %>
+          <td class="text-info"><%= list['tag'] %></td>
+          <td class="text-info"><%= list['no'] %></td>
+          <td class="text-info"><%= list['name'] %></td>
+          <td class="text-info"><%= list['distance'] / 1000 %>公里</td>
+        <% else%>
+          <td class="text-muted"><%= list['tag'] %></td>
+          <td class="text-muted"><%= list['no'] %></td>
+          <td class="text-muted"><%= list['name'] %></td>
+          <td class="text-muted"><%= list['distance'] / 1000 %>公里</td>
         <% end %>
 
       </tr>
