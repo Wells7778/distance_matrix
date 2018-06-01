@@ -19,7 +19,6 @@ class Distance < ApplicationRecord
       rep_array = respond['rows'][0]['elements']
       rep_array.each_with_index do |rep, index|
         result[index + i * 25 ] ['distance'] = rep['distance']['value']
-        puts "Size: #{dest.size}, #{index + (i * 25) }"
       end
       i += 1
     end
