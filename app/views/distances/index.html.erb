@@ -15,14 +15,16 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>Address</th>
-          <th>No</th>
+          <th>搜尋名稱</th>
+          <th>地址</th>
+          <th>#</th>
         </tr>
       </thead>
       <tbody>
         <% @distances.each do |distance| %>
           <tr>
             <td><%= distance.address %></td>
+            <td><%= distance.geo_address %></td>
             <td>
               <%= link_to "show", distance_path(distance) %>
             </td>
