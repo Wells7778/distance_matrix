@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180531035143) do
+ActiveRecord::Schema.define(version: 20180614142655) do
 
   create_table "distances", force: :cascade do |t|
     t.string "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "respond_list"
+    t.text "geo_address"
+    t.string "post_code"
   end
 
   create_table "services", force: :cascade do |t|
