@@ -11,8 +11,9 @@ class DistancesController < ApplicationController
 
   def create
     @distance = Distance.new(dis_params)
-    @distance.geo_address = Distance.geocode(dis_params[:address])
-    @distance.post_code = @distance.geo_address[0]
+    geo_address = Distance.geocode(dis_params[:address])
+    @distance.post_code = geo_address.chomp.chr
+    @distance.geo_address = geo_address
     @distance.respond_list = @distance.cal_distance.sort_by { |element| element['distance'] }
     @distance.save
 
