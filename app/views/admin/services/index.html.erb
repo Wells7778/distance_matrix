@@ -1,0 +1,118 @@
+<div class="row">
+  <h1>後台設定服務網</h1>
+  <hr>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newModal">
+  新增服務網
+  </button>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>註記</th>
+        <th>代號</th>
+        <th>名稱</th>
+        <th>Lat</th>
+        <th>Lng</th>
+        <th>#</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @services.each do |service| %>
+        <tr id=<%= service.id %>>
+          <td><%= service.tag %></td>
+          <td><%= service.no %></td>
+          <td><%= service.name %></td>
+          <td><%= service.lat %></td>
+          <td><%= service.lng %></td>
+          <td>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=<%= "#Modal-#{service.id}" %>>Edit</button>
+            <%= link_to "delete", admin_service_path(service), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-primary" %>
+          </td>
+        </tr>
+        <div class="modal fade" id=<%= "Modal-#{service.id}" %> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">新增服務網</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <%= form_tag admin_service_path(service), method: :patch, class: "form" do %>
+                  <div class="form-group">
+                    <%= label_tag :tag, "註記" %>
+                    <%= select_tag :tag, options_for_select(['優','無','劣'], service.tag), class: "form-control" %>
+                  </div>
+                  <div class="form-group">
+                    <%= label_tag :no, "代號" %>
+                    <%= text_field_tag :no, service.no , class: "form-control" %>
+                  </div>
+                  <div class="form-group">
+                    <%= label_tag :name, "Name" %>
+                    <%= text_field_tag :name, service.name, class: "form-control" %>
+                  </div>
+                  <div class="form-group">
+                    <%= label_tag :lat, "Lat" %>
+                    <%= text_field_tag :lat, service.lat, class: "form-control" %>
+                  </div>
+                  <div class="form-group">
+                    <%= label_tag :lng, "Lng" %>
+                    <%= text_field_tag :lng, service.lat, class: "form-control" %>
+                  </div>
+                  <%= submit_tag "Update", class: "btn btn-primary" %>
+                <% end -%>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">新增服務網</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <%= form_for [:admin, @service] do |f| %>
+            <div class="form-group">
+              <%= f.label :tag, "註記" %>
+              <%= f.select :tag, ['優','無','劣'], class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :no, "代號" %>
+              <%= f.text_field :no, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :name, "Name" %>
+              <%= f.text_field :name, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :lat, "Lat" %>
+              <%= f.text_field :lat, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :lng, "Lng" %>
+              <%= f.text_field :lng, class: "form-control" %>
+            </div>
+            <%= f.submit "Submit", :disable_with => 'Submiting...', class: "btn btn-primary" %>
+          <% end %>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
