@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180614142655) do
+ActiveRecord::Schema.define(version: 20180615122450) do
 
   create_table "distances", force: :cascade do |t|
     t.string "address"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20180614142655) do
     t.string "lat"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "post_code"
   end
 
 end
