@@ -16,6 +16,8 @@ class Distance < ApplicationRecord
     current_code = self.post_code.to_i
     if current_code > 94
       @destinations = Service.where(post_code: [(current_code - 10)..(current_code + 10)]).or(Service.where(post_code: [26..27]))
+    elsif current_code > 25 and current_code < 28
+      @destinations = Service.where(post_code: [(current_code - 10)..(current_code + 10)]).or(Service.where(post_code: [95..98]))
     else
       @destinations = Service.where(post_code: [(current_code - 10)..(current_code + 10)])
     end
