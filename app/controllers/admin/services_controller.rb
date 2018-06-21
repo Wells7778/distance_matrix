@@ -1,7 +1,7 @@
 class Admin::ServicesController < ApplicationController
   before_action :set_service, only: [:update, :destroy]
   def index
-    @ransack = Service.all.order("no asc").ransack(r_params)
+    @ransack = Service.order("no asc").ransack(params[:q])
     @services = @ransack.result(distinct: true)
     @service = Service.new
   end
@@ -37,7 +37,4 @@ class Admin::ServicesController < ApplicationController
     @service = Service.find_by(id: params[:id])
   end
 
-  def r_params
-    params.require(:q).permit(:s)
-  end
 end
