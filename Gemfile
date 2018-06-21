@@ -59,3 +59,5 @@ gem 'google_distance_matrix'
 gem 'rest-client', '~> 2.0', '>= 2.0.2'
 gem 'bootstrap', '~> 4.0'
 gem 'jquery-rails'
+# 首頁排序搜尋用
+gem 'ransack'
