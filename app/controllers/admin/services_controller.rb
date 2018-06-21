@@ -1,7 +1,8 @@
 class Admin::ServicesController < ApplicationController
   before_action :set_service, only: [:update, :destroy]
   def index
-    @services = Service.all
+    @ransack = Service.ransack(params[:q])
+    @services = @ransack.result(distinct: true)
     @service = Service.new
   end
 

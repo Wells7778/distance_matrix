@@ -8,8 +8,8 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>註記</th>
-        <th>代號</th>
+        <th><%= sort_link(@ransack, :tag, "註記", default_order: :asc) %></th>
+        <th><%= sort_link(@ransack, :no, "代號", default_order: :asc) %></th>
         <th>名稱</th>
         <th>Lat</th>
         <th>Lng</th>
