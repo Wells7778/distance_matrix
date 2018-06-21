@@ -13,7 +13,12 @@ class Distance < ApplicationRecord
   def cal_distance
     url = 'https://maps.googleapis.com/maps/api/distancematrix/json'
     key = 'AIzaSyCVtWcyzFy4AZBR7QMMdHUSG3maUcHieeo'
-    @destinations = Service.where(post_code: [(self.post_code.to_i - 1)..(self.post_code.to_i + 1)])
+    current_code = self.post_code.to_i
+    if current_code > 94
+      @destinations = Service.where(post_code: [(current_code - 10)..(current_code + 10)]).or(Service.where(post_code: [26..27]))
+    else
+      @destinations = Service.where(post_code: [(current_code - 10)..(current_code + 10)])
+    end
     dest = @destinations.pluck(:lng, :lat).map { |t| t.join(",")}
 
     result = []
