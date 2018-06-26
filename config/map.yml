@@ -1,0 +1,4 @@
+development:
+  secret: AIzaSyCVtWcyzFy4AZBR7QMMdHUSG3maUcHieeo
+production:
+  secret: AIzaSyCVtWcyzFy4AZBR7QMMdHUSG3maUcHieeo
