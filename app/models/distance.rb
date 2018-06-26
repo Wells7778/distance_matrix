@@ -3,7 +3,7 @@ class Distance < ApplicationRecord
 
   def self.geocode(address)
     url = 'https://maps.googleapis.com/maps/api/geocode/json'
-    key = Rails.application.config_for(:map)['secret']
+    key = $settings['secret']
     json_rep = RestClient.get url, {params: {address: address, language: 'zh-TW', key: key }}
     respond = JSON.parse(json_rep)
     if respond['status'] = 'OK'
@@ -12,12 +12,10 @@ class Distance < ApplicationRecord
   end
   def cal_distance
     url = 'https://maps.googleapis.com/maps/api/distancematrix/json'
-    key = Rails.application.config_for(:map)['secret']
+    key = $settings['secret']
     current_code = self.post_code.to_i
     start_code = (( current_code / 10 ) - 1 ) * 10
     end_code = ((( current_code / 10 ) + 1 ) * 10) + 9
-    puts start_code
-    puts end_code
     if current_code > 94
       @destinations = Service.where(post_code: [start_code..end_code]).or(Service.where(post_code: [26..27]))
     elsif current_code > 25 and current_code < 28
