@@ -3,6 +3,7 @@
     <h1 class="text-danger"><%= @distance.address %></h1>
     <h3 class="text-muted"><%= @distance.geo_address %></h3>
     <%= link_to "回搜尋", root_path, class: "btn btn-primary my-2" %>
+    <img border="0" src=<%= @img_url %> alt="">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -31,7 +32,6 @@
               <td class="text-muted"><%= list['name'] %></td>
               <td class="text-muted"><%= list['distance'] / 1000 %>公里</td>
             <% end %>
-
           </tr>
         <% end %>
       </tbody>

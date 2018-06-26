@@ -7,6 +7,7 @@ class DistancesController < ApplicationController
   def show
     @distance = Distance.find_by(id: params[:id])
     @lists = @distance.respond_list
+    @img_url = "//maps.googleapis.com/maps/api/staticmap?center=#{@distance.geo_address}&size=600x300&zoom=16&language=zh-TW&key=#{$settings['secret']}"
   end
 
   def create
