@@ -61,3 +61,4 @@ gem 'bootstrap', '~> 4.0'
 gem 'jquery-rails'
 # 首頁排序搜尋用
 gem 'ransack'
+gem 'kaminari'
