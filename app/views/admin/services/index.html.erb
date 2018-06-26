@@ -1,9 +1,19 @@
 <div class="row">
-  <h1>後台設定服務網</h1>
+  <h1 class="mr-2">後台設定服務網</h1>
   <hr>
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newModal">
-  新增服務網
-  </button>
+  <div class="align-self-center mx-5">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newModal">
+    新增服務網
+    </button>
+  </div>
+  <div class="align-self-center mx-5">
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#searchModal">
+    搜尋
+    </button>
+  </div>
+  <div class="align-self-center mx-5">
+    <%= link_to  "清除搜尋", admin_root_path, class: "btn btn-outline-primary" %>
+  </div>
 
   <table class="table table-striped">
     <thead>
@@ -72,7 +82,9 @@
       <% end %>
     </tbody>
   </table>
-
+  <div class="m-auto">
+    <%= paginate @services %>
+  </div>
   <div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -108,6 +120,35 @@
           <% end %>
 
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">搜尋</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+        <%= search_form_for [:admin, @ransack], { class: "form" } do |f| %>
+          <div class="form-group">
+            <%= f.label :name_cont, "搜尋名稱包含" %>
+            <%= f.search_field :name_cont, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <%= f.label :no_cont, "搜尋代號包含" %>
+            <%= f.search_field :no_cont, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <%= f.submit class: "btn btn-primary" %>
+          </div>
+        <% end %>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
