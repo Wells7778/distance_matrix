@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-sm-6 offset-sm-3">
+  <div class="col-sm-8 offset-sm-2">
     <h1>米其林服務網搜尋</h1>
     <%= form_for @distance do |f| %>
       <div class="form-group">
@@ -17,6 +17,7 @@
         <tr>
           <th>搜尋名稱</th>
           <th>地址</th>
+          <th>搜尋日期</th>
           <th>#</th>
         </tr>
       </thead>
@@ -25,8 +26,9 @@
           <tr>
             <td><%= distance.address %></td>
             <td><%= distance.geo_address %></td>
+            <td><%= distance.created_at.strftime("%Y/%m/%d") %></td>
             <td>
-              <%= link_to "show", distance_path(distance) %>
+              <%= link_to "顯示", distance_path(distance), class: "btn btn-outline-primary" %>
             </td>
           </tr>
         <% end %>

@@ -1,7 +1,7 @@
 class DistancesController < ApplicationController
   def index
     @distance = Distance.new
-    @distances = Distance.all.page(params[:page]).per(20)
+    @distances = Distance.all.order(created_at: :desc).page(params[:page]).per(20)
   end
 
   def show
