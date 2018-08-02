@@ -62,3 +62,4 @@ gem 'jquery-rails'
 # 首頁排序搜尋用
 gem 'ransack'
 gem 'kaminari'
+gem 'figaro'
