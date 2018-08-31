@@ -8,7 +8,7 @@ class DistancesController < ApplicationController
     @distance = Distance.find_by(id: params[:id])
     # 33801 文鹿 31001 竹東東昇 43504 梧棲有勝 81202 小港和義 82002 岡山和義
     @tmp_lists = @distance.respond_list
-    @priority_lists = @tmp_lists.select { |o| o['no'] == '33801' || o['no'] == '31001' || o['no'] == '43504'|| o['no'] == '81202'|| o['no'] == '82002'}.select { |o| o['distance'] <= 25000 }
+    @priority_lists = @tmp_lists.select { |o| o['no'] == '33801' || o['no'] == '31001' || o['no'] == '43504'|| o['no'] == '81202'|| o['no'] == '82002'}.select { |o| o['distance'] <= 25999 }
     if @priority_lists.any?
       @tmp_lists -= @priority_lists
       @lists = @priority_lists.sort_by { |element| element['distance'] } + @tmp_lists
