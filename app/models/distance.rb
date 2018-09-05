@@ -6,7 +6,6 @@ class Distance < ApplicationRecord
     key = $settings['secret']
     json_rep = RestClient.get url, {params: {address: address, language: 'zh-TW', key: key }}
     respond = JSON.parse(json_rep)
-    puts address
     if respond['status'] == 'OK'
       return respond['results'][0]['formatted_address']
     else
