@@ -1,4 +1,5 @@
 class Admin::ServicesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_service, only: [:update, :destroy]
   def index
     @ransack = Service.order("no asc").ransack(ransack_params)
