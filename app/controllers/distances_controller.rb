@@ -20,18 +20,30 @@ class DistancesController < ApplicationController
 
   def create
     @distance = Distance.new(dis_params)
-    geo_address = Distance.geocode(dis_params[:address])
-    if geo_address.nil?
+    @address = dis_params[:address]
+    @geo_address = Distance.geocode(dis_params[:address])
+    if @geo_address.nil?
       flash[:alert] = "GOOGLE搜尋不到，請用鄉鎮區域搜尋"
       redirect_to root_path
     else
-      @distance.post_code = geo_address.chomp.slice(0..1)
-      @distance.geo_address = geo_address
-      @distance.respond_list = @distance.cal_distance.sort_by { |element| element['distance'] }
-      @distance.save
-      flash[:notice] = "搜尋完成"
-      redirect_to distance_path(@distance)
+      # @distance.post_code = geo_address.chomp.slice(0..1)
+      # @distance.geo_address = geo_address
+      # @distance.respond_list = @distance.cal_distance.sort_by { |element| element['distance'] }
+      # @distance.save
+      # flash[:notice] = "搜尋完成"
+      # redirect_to distance_path(@distance)
     end
+  end
+
+  def cal_distance
+    @distance = Distance.new(dis_params)
+    @geo_address = dis_params[:address]
+    @distance.post_code = @geo_address.chomp.slice(0..1)
+    @distance.geo_address = @geo_address
+    @distance.respond_list = @distance.cal_distance.sort_by { |element| element['distance'] }
+    @distance.save
+    flash[:notice] = "搜尋完成"
+    redirect_to distance_path(@distance)
   end
 
   private
