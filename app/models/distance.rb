@@ -6,8 +6,10 @@ class Distance < ApplicationRecord
     key = $settings['secret']
     json_rep = RestClient.get url, {params: {address: address, language: 'zh-TW', key: key }}
     respond = JSON.parse(json_rep)
-    if respond['status'] = 'OK'
+    if respond['status'] == 'OK'
       return respond['results'][0]['formatted_address']
+    else
+      return nil
     end
   end
   def cal_distance
