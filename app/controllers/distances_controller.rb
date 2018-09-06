@@ -37,9 +37,8 @@ class DistancesController < ApplicationController
 
   def cal_distance
     @distance = Distance.new(dis_params)
-    @geo_address = dis_params[:address]
+    @geo_address = dis_params[:geo_address]
     @distance.post_code = @geo_address.chomp.slice(0..1)
-    @distance.geo_address = @geo_address
     @distance.respond_list = @distance.cal_distance.sort_by { |element| element['distance'] }
     @distance.save
     flash[:notice] = "搜尋完成"
@@ -48,6 +47,6 @@ class DistancesController < ApplicationController
 
   private
   def dis_params
-    params.require(:distance).permit(:address)
+    params.require(:distance).permit(:address, :geo_address)
   end
 end

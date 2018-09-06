@@ -1,0 +1,9 @@
+<%= form_for distance, url: cal_distance_distances_path, html: { class: "modal-form" } do |f| %>
+  <div class="form-group">
+    <%= f.hidden_field :address, value: address %>
+    <%= f.hidden_field :geo_address, value: geo_address %>
+  </div>
+  <div class="form-group">
+    <%= f.submit "開始搜尋服務網", class: "btn btn-primary" %>
+  </div>
+<% end %>

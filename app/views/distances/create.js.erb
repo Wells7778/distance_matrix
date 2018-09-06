@@ -1,17 +1,15 @@
 var checkText = document.createElement("h5");
 var checkText2 = document.createElement("h5");
 var checkText3 = document.createElement("h5");
+var form = "<%= j render partial: "modal_form", locals: { distance: @distance, address: @address, geo_address: @geo_address } %>"
 checkText.innerHTML = "搜尋地點為：<%= @address %>";
 checkText2.innerHTML = "Google回傳地點為：<%= @geo_address %>";
 checkText3.setAttribute("class", "text-danger text-right");
 checkText3.innerHTML = "是否正確？";
-var form  = $(".modal-form");
-var input = $(form).find("input#distance_address");
-var address = "<%= @geo_address %>";
+$(".modal-footer").append(form);
 $(".modal-body").append(checkText);
 $(".modal-body").append(checkText2);
 $(".modal-body").append(checkText3);
-$(input).val(address);
 $('#checkModal').modal({
                         backdrop: 'static',
                         show : true
