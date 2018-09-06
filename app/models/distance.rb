@@ -4,7 +4,10 @@ class Distance < ApplicationRecord
   def self.geocode(address)
     url = 'https://maps.googleapis.com/maps/api/geocode/json'
     key = $settings['secret']
-    json_rep = RestClient.get url, {params: {address: address, language: 'zh-TW', key: key }}
+    params = {address: address, language: 'zh-TW', key: key }
+    url = url + "?" + params.to_query
+    json_rep = RestClient.get url
+    #, {params: {address: address, language: 'zh-TW', key: key }} =>因放上heroku查詢字串有問題改用拼url方式測試
     respond = JSON.parse(json_rep)
     if respond['status'] == 'OK'
       return respond['results'][0]['formatted_address']
