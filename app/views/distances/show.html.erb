@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-sm-6">
+  <div class="col-sm-7">
     <h1 class="text-danger">搜尋地點： <%= @distance.address %></h1>
     <h3 class="text-muted">ＧＯＯＧＬＥ地點： <%= @distance.geo_address %></h3>
     <%= link_to "回搜尋", root_path, class: "btn btn-primary my-2" %>
@@ -10,6 +10,7 @@
           <th>註記</th>
           <th>編號</th>
           <th>服務網名字</th>
+          <th>營業時間</th>
           <th>路徑距離</th>
           <th>..</th>
         </tr>
@@ -21,16 +22,19 @@
               <td class="text-danger"><%= list['tag'] %></td>
               <td class="text-danger" id="id-<%= list['no'] %>"><%= list['no'] %></td>
               <td class="text-danger"><%= list['name'] %></td>
+              <td class="text-danger"><%= list['service_time'] %></td>
               <td class="text-danger"><%= list['distance'] / 1000 %>公里</td>
             <% elsif list['tag'] == "無" %>
               <td class="text-info"><%= list['tag'] %></td>
               <td class="text-info" id="id-<%= list['no'] %>"><%= list['no'] %></td>
               <td class="text-info"><%= list['name'] %></td>
+              <td class="text-info"><%= list['service_time'] %></td>
               <td class="text-info"><%= list['distance'] / 1000 %>公里</td>
             <% else%>
               <td class="text-muted"><%= list['tag'] %></td>
               <td class="text-muted" id="id-<%= list['no'] %>"><%= list['no'] %></td>
               <td class="text-muted"><%= list['name'] %></td>
+              <td class="text-muted"><%= list['service_time'] %></td>
               <td class="text-muted"><%= list['distance'] / 1000 %>公里</td>
             <% end %>
               <td>
@@ -41,7 +45,7 @@
       </tbody>
     </table>
   </div>
-  <div class="col-sm-6">
+  <div class="col-sm-5">
     <h3 class="mt-5 text-muted">地圖僅供參考</h3>
     <img border="1" src="<%= @img_url %>" alt="" class="mt-1">
 

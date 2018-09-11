@@ -35,7 +35,7 @@ class Distance < ApplicationRecord
     result = []
 
     @destinations.each do |destination|
-      result << {'tag' => destination.tag, 'no' => destination.no, 'name' => destination.name }
+      result << {'tag' => destination.tag, 'no' => destination.no, 'name' => destination.name, 'service_time' => destination.service_time }
     end
     i = 0
     while dest.size > 0
