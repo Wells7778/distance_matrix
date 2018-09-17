@@ -71,7 +71,8 @@
                 <tr>
                   <th style="width: 20%;">交流道</th>
                   <th style="width: 10%;">K數</th>
-                  <th style="width: 20%;">米其林鄉鎮市</th>
+                  <th style="width: 20%;">北上(西向)區域</th>
+                  <th style="width: 20%;">南上(東向)區域</th>
                   <th>南下預告出口</th>
                   <th>北上預告出口</th>
                 </tr>
@@ -81,6 +82,7 @@
                   <td>{{ item.name }}</td>
                   <td>{{ item.km }}</td>
                   <td>{{ item.roadN }}</td>
+                  <td>{{ item.roadS }}</td>
                   <td>{{ item.cityS }}</td>
                   <td>{{ item.cityN }}</td>
                   </tr>
@@ -415,13 +417,13 @@
               return item.km <= vm.km && item.roadN !== "";
             });
             vm.result = arr[arr.length-1];
-            $("#distance_address").val(vm.result.roadS);
+            $("#distance_address").val(vm.result.roadN);
           } else {
             var arr = _arr[0].detail.filter(function(item, index, array){
               return item.km >= vm.km && item.roadS !== "";
             });
             vm.result = arr[0];
-            $("#distance_address").val(vm.result.roadN);
+            $("#distance_address").val(vm.result.roadS);
           }
         } else {
           $("#freeway-alert").html("請輸入國道方向與里程");
