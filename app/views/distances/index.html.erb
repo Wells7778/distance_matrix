@@ -13,21 +13,22 @@
     <h3>國道速查</h3>
       <div class="input-group mb-3">
         <div class="input-group-prepend">
-          <label class="input-group-text" for="inputGroupSelect01" v-if="selectedDirection ==='北上'">{{ result.roadN }}</label>
-          <label class="input-group-text" for="inputGroupSelect01" v-else>{{ result.roadS }}</label>
+          <label class="input-group-text" for="inputGroupSelect01" v-if="selectedDirection ==='北上'">米其林區域為：{{ result.roadN }}</label>
+          <label class="input-group-text" for="inputGroupSelect01" v-else>米其林區域為：{{ result.roadS }}</label>
         </div>
-        <select class="custom-select" id="inputGroupSelect01" v-model.number="selectedRoad">
+        <select class="custom-select" id="inputGroupSelect01" v-model="selectedRoad">
           <option disabled value="">請選擇國道</option>
-          <option :value="key" v-for="(item, key) in selectRoadData" :key="key">{{ item }}</option>
+          <option :value="item" v-for="(item, key) in selectRoadData" :key="key">{{ item }}</option>
         </select>
         <select class="custom-select" id="inputGroupSelect01" v-model="selectedDirection">
           <option disabled value="">請選擇方向</option>
           <option :value="item" v-for="item in selectDirectionData">{{ item }}</option>
         </select>
         <input type="number" v-model.number="km" placeholder="請輸入公里數">
-        <button @click="getResult">速查鄉鎮</button>
-        <button @click="showFreeway">查國道表</button>
+        <button @click="getResult" class="btn btn-primary">速查鄉鎮</button>
+        <button @click="showFreeway" class="btn btn-success">查國道表</button>
       </div>
+      <p id="freeway-alert" class="text-danger text-center"></p>
     <hr>
     <h3>搜尋紀錄</h3>
     <table class="table table-striped">
@@ -57,37 +58,39 @@
     </div>
   </div>
   <!-- Modal for freeway-->
-  <div class="modal fade" id="freewayModal" tabindex="-1" role="dialog" aria-labelledby="checkModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title text-dark" id="checkModalLabel"></h4>
-        </div>
-        <div class="modal-body">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>交流道</th>
-                <th>K數</th>
-                <th style="width: 10%;">鄉鎮市</th>
-                <th>南下預告出口</th>
-                <th>北上預告出口</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, key) in selectFreeway" :key="key">
-                <td>{{ item.name }}</td>
-                <td>{{ item.km }}</td>
-                <td>{{ item.roadN }}</td>
-                <td>{{ item.cityS }}</td>
-                <td>{{ item.cityN }}</td>
-              </tr>
-            </tbody>
-          </table>
+  <template v-if="selectedRoad !== ''">
+    <div class="modal fade" id="freewayModal" tabindex="-1" role="dialog" aria-labelledby="freewayModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title text-dark" id="freewayModalLabel">{{ selectFreeway.name }}</h4>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>交流道</th>
+                  <th>K數</th>
+                  <th style="width: 10%;">鄉鎮市</th>
+                  <th>南下預告出口</th>
+                  <th>北上預告出口</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, key) in selectFreeway.detail" :key="key">
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.km }}</td>
+                  <td>{{ item.roadN }}</td>
+                  <td>{{ item.cityS }}</td>
+                  <td>{{ item.cityN }}</td>
+                  </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </template>
 </div>
 
 <!-- Modal -->
@@ -113,122 +116,330 @@
     data: {
       selectedRoad: "",
       selectedDirection: "",
-      selectRoadData: ["國一","國二","國三","國四","國五","國六","國八","國十"],
+      selectRoadData: ["國一","汐止－楊梅高架","國二","國三","國三甲","國四","國五","國六","國八","國十"],
       selectDirectionData: [],
       km: "",
       roadData: [
-        [
-          {name: "基隆端", cityN: "基隆市區、西岸碼頭", cityS: "------", km: 0, roadN: "基隆市仁愛區", roadS: ""},
-          {name: "基隆交流道", cityN: "八堵、金山", cityS: "八堵、金山", km: 1, roadN: "基隆市仁愛區", roadS: "基隆市仁愛區"},
-          {name: "八堵交流道", cityN: "暖暖、瑞芳", cityS: "------", km: 2, roadN: "基隆市安樂區", roadS: ""},
-          {name: "大華系統交流道", cityN: "萬里、瑞濱", cityS: "------", km: 5, roadN: "基隆市七堵區", roadS: ""},
-          {name: "五堵交流道", cityN: "五堵", cityS: "五堵", km: 6, roadN: "基隆市七堵區", roadS: "基隆市七堵區"},
-          {name: "汐止交流道", cityN: "汐止", cityS: "汐止、國道3號", km: 10, roadN: "新北市汐止區", roadS: "新北市汐止區"},
-          {name: "汐止系統交流道", cityN: "木柵、萬里", cityS: "------", km: 11, roadN: "新北市汐止區", roadS: ""},
-          {name: "高架道路汐止端", cityN: "------", cityS: "高架道路堤頂大道、五股", km: 13, roadN: "新北市汐止區", roadS: ""},
-          {name: "東湖交流道", cityN: "康寧路", cityS: "------", km: 15, roadN: "台北市內湖區", roadS: ""},
-          {name: "內湖交流道", cityN: "成功路", cityS: "南京東路（A）成功路（B）", km: 17, roadN: "台北市內湖區", roadS: "台北市內湖區"},
-          {name: "圓山交流道", cityN: "濱江街（A）建國北路、松江路（B）", cityS: "建國北路", km: 23, roadN: "台北市中山區", roadS: "台北市中山區"},
-          {name: "台北交流道", cityN: "重慶北路", cityS: "士林（A）台北市區（B）", km: 25, roadN: "台北市大同區", roadS: "台北市大同區"},
-          {name: "三重交流道", cityN: "三重", cityS: "三重", km: 27, roadN: "新北市三重區", roadS: "新北市三重區"},
-          {name: "五股轉接道", cityN: "環河北路、汐止", cityS: "-----", km: 32, roadN: "新北市五股區", roadS: ""},
-          {name: "五股交流道", cityN: "五股、新莊", cityS: "五股、新莊", km: 33, roadN: "新北市五股區", roadS: "新北市五股區"},
-          {name: "泰山轉接道", cityN: "-----", cityS: "桃園機場", km: 35, roadN: "", roadS: ""},
-          {name: "林口交流道", cityN: "林口、龜山、文化一路（A ）林口、龜山、文化北路（B）", cityS: "林口、龜山、文化一路（A ）林口、龜山、文化北路（B）", km: 41, roadN: "新北市林口區", roadS: "新北市林口區"},
-          {name: "桃園交流道", cityN: "桃園、南崁", cityS: "桃園、南崁", km: 49, roadN: "桃園市蘆竹區", roadS: "桃園市蘆竹區"},
-          {name: "機場系統交流道", cityN: "桃園、鶯歌、大園、桃園機場", cityS: "桃園、鶯歌、大園、桃園機場", km: 52, roadN: "桃園市桃園區", roadS: "桃園市桃園區"},
-          {name: "中壢服務區"  ,cityN: "", cityS: "", km: 55, roadN: "", roadS: ""},
-          {name: "內壢交流道", cityN: "大園、中壢", cityS: "中壢、大園", km: 57, roadN: "桃園市中壢區", roadS: "桃園市中壢區"},
-          {name: "中壢轉接道", cityN: "桃園機場、五股", cityS: "校前路", km: 59, roadN: "", roadS: ""},
-          {name: "中壢交流道", cityN: "中壢、平鎮、新屋", cityS: "中壢、平鎮、新屋", km: 62, roadN: "桃園市中壢區", roadS: "桃園市中壢區"},
-          {name: "平鎮系統交流道", cityN: "觀音、大溪", cityS: "觀音、大溪", km: 65, roadN: "桃園市平鎮區", roadS: "桃園市平鎮區"},
-          {name: "幼獅交流道", cityN: "幼獅工業區", cityS: "幼獅工業區", km: 67, roadN: "桃園市楊梅區", roadS: "桃園市楊梅區"},
-          {name: "楊梅交流道", cityN: "楊梅、埔心", cityS: "楊梅、埔心", km: 69, roadN: "桃園市楊梅區", roadS: "桃園市楊梅區"},
-          {name: "高架道路楊梅端", cityN: "中壢、桃園機場", cityS: "------", km: 71, roadN: "", roadS: ""},
-          {name: "湖口交流道", cityN: "湖口、新豐、新竹工業區", cityS: "湖口、新豐、新竹工業區", km: 83, roadN: "新竹縣湖口鄉", roadS: "新竹縣湖口鄉"},
-          {name: "湖口服務區", cityN: "", cityS: "", km: 86, roadN: "", roadS: ""},
-          {name: "竹北交流道"  ,cityN: "竹北、芎林", cityS: "竹北、芎林", km: 91, roadN: "新竹縣竹北市", roadS: "新竹縣竹北市"},
-          {name: "新竹交流道", cityN: "新竹、竹東（A）科學工業園區（B）", cityS: "新竹、竹東（A）科學工業園區（B）", km: 95, roadN: "新竹市", roadS: "新竹市"},
-          {name: "新竹系統交流道", cityN: "竹南、後龍（A）竹東、台北（B）", cityS: "竹南、台中（A）竹東、台北（B）", km: 99, roadN: "新竹縣寶山鄉", roadS: "新竹縣寶山鄉"},
-          {name: "頭份交流道", cityN: "頭份、三灣", cityS: "頭份、三灣", km: 110, roadN: "苗栗縣頭份市", roadS: "苗栗縣頭份市"},
-          {name: "頭屋交流道", cityN: "造橋、頭屋", cityS: "造橋、頭屋", km: 125, roadN: "苗栗縣頭屋鄉", roadS: "苗栗縣頭屋鄉"},
-          {name: "苗栗交流道", cityN: "苗栗、公館", cityS: "苗栗、公館", km: 132, roadN: "苗栗縣公館鄉", roadS: "苗栗縣公館鄉"},
-          {name: "銅鑼交流道", cityN: "銅鑼,銅鑼科學園區", cityS: "銅鑼,銅鑼科學園區", km: 140, roadN: "苗栗縣銅鑼鄉", roadS: "苗栗縣銅鑼鄉"},
-          {name: "三義交流道", cityN: "三義", cityS: "三義", km: 150, roadN: "苗栗縣三義鄉", roadS: "苗栗縣三義鄉"},
-          {name: "泰安服務區", cityN: "", cityS: "", km: 159, roadN: "", roadS: ""},
-          {name: "后里交流道", cityN: "后里、外埔", cityS: "后里、外埔", km: 160, roadN: "台中市后里區", roadS: "台中市后里區"},
-          {name: "台中系統交流道", cityN: "豐原、清水", cityS: "豐原、清水", km: 165, roadN: "台中市神岡區", roadS: "台中市神岡區"},
-          {name: "豐原交流道", cityN: "豐原、神岡", cityS: "豐原、神岡", km: 168, roadN: "台中市神岡區", roadS: "台中市神岡區"},
-          {name: "大雅交流道", cityN: "台中、大雅", cityS: "台中、大雅", km: 174, roadN: "台中市北屯區", roadS: "台中市北屯區"},
-          {name: "台中交流道", cityN: "台中、沙鹿", cityS: "台中、沙鹿", km: 178, roadN: "台中市西屯區", roadS: "台中市西屯區"},
-          {name: "南屯交流道", cityN: "台中、龍井", cityS: "台中、龍井", km: 181, roadN: "台中市南屯區", roadS: "台中市南屯區"},
-          {name: "王田交流道", cityN: "烏日、大肚", cityS: "烏日、大肚", km: 189, roadN: "台中市大肚區", roadS: "台中市大肚區"},
-          {name: "彰化系統交流道", cityN: "大甲、南投", cityS: "大甲、南投", km: 192, roadN: "彰化市", roadS: "彰化市"},
-          {name: "彰化交流道", cityN: "彰化、鹿港", cityS: "彰化、鹿港", km: 198, roadN: "彰化市", roadS: "彰化市"},
-          {name: "埔鹽系統交流道", cityN: "員林、福興、埔鹽、草屯", cityS: "員林、福興、埔鹽、草屯", km: 207, roadN: "彰化縣埔鹽鄉", roadS: "彰化縣埔鹽鄉"},
-          {name: "員林交流道", cityN: "埔心、員林、溪湖", cityS: "埔心、員林、溪湖", km: 211, roadN: "彰化縣溪湖鎮", roadS: "彰化縣溪湖鎮"},
-          {name: "北斗交流道", cityN: "北斗、埤頭", cityS: "北斗、埤頭", km: 220, roadN: "彰化縣埤頭鄉", roadS: "彰化縣埤頭鄉"},
-          {name: "西螺服務區", cityN: "", cityS: "", km: 229, roadN: "", roadS: ""},
-          {name: "西螺交流道", cityN: "西螺、莿桐", cityS: "西螺、莿桐", km: 230, roadN: "雲林縣西螺鎮", roadS: "雲林縣西螺鎮"},
-          {name: "虎尾交流道", cityN: "虎尾、斗六", cityS: "斗六、虎尾", km: 235, roadN: "雲林縣虎尾鎮", roadS: "雲林縣虎尾鎮"},
-          {name: "斗南交流道", cityN: "斗南、斗六、虎尾", cityS: "斗南、虎尾", km: 240, roadN: "雲林縣斗南鎮", roadS: "雲林縣斗南鎮"},
-          {name: "雲林系統交流道", cityN: "土庫、古坑", cityS: "土庫、古坑", km: 243, roadN: "雲林縣斗南鎮", roadS: "雲林縣斗南鎮"},
-          {name: "大林交流道", cityN: "溪口、大林", cityS: "大林、溪口", km: 250, roadN: "嘉義縣大林鎮", roadS: "嘉義縣大林鎮"},
-          {name: "民雄交流道", cityN: "新港、民雄", cityS: "民雄、新港", km: 257, roadN: "嘉義縣民雄鄉", roadS: "嘉義縣民雄鄉"},
-          {name: "嘉義交流道", cityN: "嘉義、北港、新港", cityS: "嘉義、北港、新港", km: 264, roadN: "嘉義市", roadS: "嘉義市"},
-          {name: "水上交流道", cityN: "朴子、太保、水上", cityS: "水上、朴子、太保", km: 270, roadN: "嘉義縣水上鄉", roadS: "嘉義縣水上鄉"},
-          {name: "嘉義系統交流道", cityN: "東石、水上", cityS: "水上、東石", km: 272, roadN: "嘉義縣水上鄉", roadS: "嘉義縣水上鄉"},
-          {name: "新營服務區", cityN: "", cityS: "", km: 284, roadN: "", roadS: ""},
-          {name: "新營交流道", cityN: "鹽水、新營", cityS: "新營、鹽水", km: 288, roadN: "台南市新營區", roadS: "台南市新營區"},
-          {name: "下營系統交流道", cityN: "學甲、玉井", cityS: "玉井、學甲", km: 299, roadN: "台南市下營區", roadS: "台南市下營區"},
-          {name: "麻豆交流道", cityN: "麻豆、佳里", cityS: "佳里、麻豆", km: 303, roadN: "台南市麻豆區", roadS: "台南市麻豆區"},
-          {name: "安定交流道", cityN: "安定、善化", cityS: "善化、安定", km: 311, roadN: "台南市安定區", roadS: "台南市安定區"},
-          {name: "台南系統交流道", cityN: "台南、新化", cityS: "新化、台南", km: 315, roadN: "台南市新市區", roadS: "台南市新市區"},
-          {name: "永康交流道", cityN: "台南、永康", cityS: "永康、台南", km: 319, roadN: "台南市永康區", roadS: "台南市永康區"},
-          {name: "大灣交流道", cityN: "台南、仁德", cityS: "台南、仁德", km: 324, roadN: "台南市永康區", roadS: "台南市永康區"},
-          {name: "台南交流道", cityN: "台南、仁德", cityS: "仁德、台南", km: 327, roadN: "台南市仁德區", roadS: "台南市仁德區"},
-          {name: "仁德系統交流道", cityN: "台南、關廟", cityS: "關廟、台南", km: 330, roadN: "台南市仁德區", roadS: "台南市仁德區"},
-          {name: "仁德服務區", cityN: "", cityS: "", km: 335, roadN: "", roadS: ""},
-          {name: "路竹交流道", cityN: "路竹、阿蓮", cityS: "阿蓮、路竹", km: 338, roadN: "高雄市路竹區", roadS: "高雄市路竹區"},
-          {name: "高科交流道", cityN: "高雄科學園區", cityS: "高雄科學園區", km: 342, roadN: "高雄市路竹區", roadS: "高雄市路竹區"},
-          {name: "岡山交流道", cityN: "岡山、燕巢", cityS: "燕巢、岡山", km: 349, roadN: "高雄市燕巢區", roadS: "高雄市燕巢區"},
-          {name: "楠梓交流道", cityN: "楠梓、仁武", cityS: "大社、楠梓", km: 356, roadN: "高雄市楠梓區", roadS: "高雄市楠梓區"},
-          {name: "鼎金系統交流道", cityN: "旗山、左營", cityS: "旗山、左營", km: 362, roadN: "高雄市仁武區", roadS: "高雄市仁武區"},
-          {name: "高雄交流道", cityN: "中正路（B）三多路（C）", cityS: "九如路（A）建國路（A）中正路（B）", km: 367, roadN: "高雄市三民區", roadS: "高雄市三民區"},
-          {name: "瑞隆路出口匝道", cityN: "------", cityS: "瑞隆路", km: 369, roadN: "高雄市鳳山區", roadS: "高雄市鳳山區"},
-          {name: "五甲系統交流道", cityN: "------", cityS: "屏東", km: 370, roadN: "高雄市鳳山區", roadS: "高雄市鳳山區"},
-          {name: "五甲交流道", cityN: "鳳山", cityS: "------", km: 371, roadN: "高雄市鳳山區", roadS: "高雄市鳳山區"},
-          {name: "高雄端", cityN: "------", cityS: "機場、市區", km: 372, roadN: "高雄市鳳山區", roadS: "高雄市鳳山區"},
-          {name: "高雄端", cityN: "------", cityS: "漁港路、旗津、第三~五貨櫃區", km: 373, roadN: "高雄市前鎮區", roadS: "高雄市前鎮區"},
-          {name: "高雄端", cityN: "------", cityS: "第一、二貨櫃區", km: 374, roadN: "高雄市前鎮區", roadS: "高雄市前鎮區"}
-        ]
+        {
+          name: "國一",
+          detail:
+            [
+              {name: "基隆端", cityN: "基隆市區、西岸碼頭", cityS: "------", km: 0, roadN: "基隆市仁愛區", roadS: ""},
+              {name: "基隆交流道", cityN: "八堵、金山", cityS: "八堵、金山", km: 1, roadN: "基隆市仁愛區", roadS: "基隆市仁愛區"},
+              {name: "八堵交流道", cityN: "暖暖、瑞芳", cityS: "------", km: 2, roadN: "基隆市安樂區", roadS: ""},
+              {name: "大華系統交流道", cityN: "萬里、瑞濱", cityS: "------", km: 5, roadN: "基隆市七堵區", roadS: ""},
+              {name: "五堵交流道", cityN: "五堵", cityS: "五堵", km: 6, roadN: "基隆市七堵區", roadS: "基隆市七堵區"},
+              {name: "汐止交流道", cityN: "汐止", cityS: "汐止、國道3號", km: 10, roadN: "新北市汐止區", roadS: "新北市汐止區"},
+              {name: "汐止系統交流道", cityN: "木柵、萬里", cityS: "------", km: 11, roadN: "新北市汐止區", roadS: ""},
+              {name: "高架道路汐止端", cityN: "------", cityS: "高架道路堤頂大道、五股", km: 13, roadN: "新北市汐止區", roadS: ""},
+              {name: "東湖交流道", cityN: "康寧路", cityS: "------", km: 15, roadN: "台北市內湖區", roadS: ""},
+              {name: "內湖交流道", cityN: "成功路", cityS: "南京東路（A）成功路（B）", km: 17, roadN: "台北市內湖區", roadS: "台北市內湖區"},
+              {name: "圓山交流道", cityN: "濱江街（A）建國北路、松江路（B）", cityS: "建國北路", km: 23, roadN: "台北市中山區", roadS: "台北市中山區"},
+              {name: "台北交流道", cityN: "重慶北路", cityS: "士林（A）台北市區（B）", km: 25, roadN: "台北市大同區", roadS: "台北市大同區"},
+              {name: "三重交流道", cityN: "三重", cityS: "三重", km: 27, roadN: "新北市三重區", roadS: "新北市三重區"},
+              {name: "五股轉接道", cityN: "環河北路、汐止", cityS: "-----", km: 32, roadN: "新北市五股區", roadS: ""},
+              {name: "五股交流道", cityN: "五股、新莊", cityS: "五股、新莊", km: 33, roadN: "新北市五股區", roadS: "新北市五股區"},
+              {name: "泰山轉接道", cityN: "-----", cityS: "桃園機場", km: 35, roadN: "", roadS: ""},
+              {name: "林口交流道", cityN: "林口、龜山、文化一路（A ）林口、龜山、文化北路（B）", cityS: "林口、龜山、文化一路（A ）林口、龜山、文化北路（B）", km: 41, roadN: "新北市林口區", roadS: "新北市林口區"},
+              {name: "桃園交流道", cityN: "桃園、南崁", cityS: "桃園、南崁", km: 49, roadN: "桃園市蘆竹區", roadS: "桃園市蘆竹區"},
+              {name: "機場系統交流道", cityN: "桃園、鶯歌、大園、桃園機場", cityS: "桃園、鶯歌、大園、桃園機場", km: 52, roadN: "桃園市桃園區", roadS: "桃園市桃園區"},
+              {name: "中壢服務區"  ,cityN: "", cityS: "", km: 55, roadN: "", roadS: ""},
+              {name: "內壢交流道", cityN: "大園、中壢", cityS: "中壢、大園", km: 57, roadN: "桃園市中壢區", roadS: "桃園市中壢區"},
+              {name: "中壢轉接道", cityN: "桃園機場、五股", cityS: "校前路", km: 59, roadN: "", roadS: ""},
+              {name: "中壢交流道", cityN: "中壢、平鎮、新屋", cityS: "中壢、平鎮、新屋", km: 62, roadN: "桃園市中壢區", roadS: "桃園市中壢區"},
+              {name: "平鎮系統交流道", cityN: "觀音、大溪", cityS: "觀音、大溪", km: 65, roadN: "桃園市平鎮區", roadS: "桃園市平鎮區"},
+              {name: "幼獅交流道", cityN: "幼獅工業區", cityS: "幼獅工業區", km: 67, roadN: "桃園市楊梅區", roadS: "桃園市楊梅區"},
+              {name: "楊梅交流道", cityN: "楊梅、埔心", cityS: "楊梅、埔心", km: 69, roadN: "桃園市楊梅區", roadS: "桃園市楊梅區"},
+              {name: "高架道路楊梅端", cityN: "中壢、桃園機場", cityS: "------", km: 71, roadN: "", roadS: ""},
+              {name: "湖口交流道", cityN: "湖口、新豐、新竹工業區", cityS: "湖口、新豐、新竹工業區", km: 83, roadN: "新竹縣湖口鄉", roadS: "新竹縣湖口鄉"},
+              {name: "湖口服務區", cityN: "", cityS: "", km: 86, roadN: "", roadS: ""},
+              {name: "竹北交流道"  ,cityN: "竹北、芎林", cityS: "竹北、芎林", km: 91, roadN: "新竹縣竹北市", roadS: "新竹縣竹北市"},
+              {name: "新竹交流道", cityN: "新竹、竹東（A）科學工業園區（B）", cityS: "新竹、竹東（A）科學工業園區（B）", km: 95, roadN: "新竹市", roadS: "新竹市"},
+              {name: "新竹系統交流道", cityN: "竹南、後龍（A）竹東、台北（B）", cityS: "竹南、台中（A）竹東、台北（B）", km: 99, roadN: "新竹縣寶山鄉", roadS: "新竹縣寶山鄉"},
+              {name: "頭份交流道", cityN: "頭份、三灣", cityS: "頭份、三灣", km: 110, roadN: "苗栗縣頭份市", roadS: "苗栗縣頭份市"},
+              {name: "頭屋交流道", cityN: "造橋、頭屋", cityS: "造橋、頭屋", km: 125, roadN: "苗栗縣頭屋鄉", roadS: "苗栗縣頭屋鄉"},
+              {name: "苗栗交流道", cityN: "苗栗、公館", cityS: "苗栗、公館", km: 132, roadN: "苗栗縣公館鄉", roadS: "苗栗縣公館鄉"},
+              {name: "銅鑼交流道", cityN: "銅鑼,銅鑼科學園區", cityS: "銅鑼,銅鑼科學園區", km: 140, roadN: "苗栗縣銅鑼鄉", roadS: "苗栗縣銅鑼鄉"},
+              {name: "三義交流道", cityN: "三義", cityS: "三義", km: 150, roadN: "苗栗縣三義鄉", roadS: "苗栗縣三義鄉"},
+              {name: "泰安服務區", cityN: "", cityS: "", km: 159, roadN: "", roadS: ""},
+              {name: "后里交流道", cityN: "后里、外埔", cityS: "后里、外埔", km: 160, roadN: "台中市后里區", roadS: "台中市后里區"},
+              {name: "台中系統交流道", cityN: "豐原、清水", cityS: "豐原、清水", km: 165, roadN: "台中市神岡區", roadS: "台中市神岡區"},
+              {name: "豐原交流道", cityN: "豐原、神岡", cityS: "豐原、神岡", km: 168, roadN: "台中市神岡區", roadS: "台中市神岡區"},
+              {name: "大雅交流道", cityN: "台中、大雅", cityS: "台中、大雅", km: 174, roadN: "台中市北屯區", roadS: "台中市北屯區"},
+              {name: "台中交流道", cityN: "台中、沙鹿", cityS: "台中、沙鹿", km: 178, roadN: "台中市西屯區", roadS: "台中市西屯區"},
+              {name: "南屯交流道", cityN: "台中、龍井", cityS: "台中、龍井", km: 181, roadN: "台中市南屯區", roadS: "台中市南屯區"},
+              {name: "王田交流道", cityN: "烏日、大肚", cityS: "烏日、大肚", km: 189, roadN: "台中市大肚區", roadS: "台中市大肚區"},
+              {name: "彰化系統交流道", cityN: "大甲、南投", cityS: "大甲、南投", km: 192, roadN: "彰化市", roadS: "彰化市"},
+              {name: "彰化交流道", cityN: "彰化、鹿港", cityS: "彰化、鹿港", km: 198, roadN: "彰化市", roadS: "彰化市"},
+              {name: "埔鹽系統交流道", cityN: "員林、福興、埔鹽、草屯", cityS: "員林、福興、埔鹽、草屯", km: 207, roadN: "彰化縣埔鹽鄉", roadS: "彰化縣埔鹽鄉"},
+              {name: "員林交流道", cityN: "埔心、員林、溪湖", cityS: "埔心、員林、溪湖", km: 211, roadN: "彰化縣溪湖鎮", roadS: "彰化縣溪湖鎮"},
+              {name: "北斗交流道", cityN: "北斗、埤頭", cityS: "北斗、埤頭", km: 220, roadN: "彰化縣埤頭鄉", roadS: "彰化縣埤頭鄉"},
+              {name: "西螺服務區", cityN: "", cityS: "", km: 229, roadN: "", roadS: ""},
+              {name: "西螺交流道", cityN: "西螺、莿桐", cityS: "西螺、莿桐", km: 230, roadN: "雲林縣西螺鎮", roadS: "雲林縣西螺鎮"},
+              {name: "虎尾交流道", cityN: "虎尾、斗六", cityS: "斗六、虎尾", km: 235, roadN: "雲林縣虎尾鎮", roadS: "雲林縣虎尾鎮"},
+              {name: "斗南交流道", cityN: "斗南、斗六、虎尾", cityS: "斗南、虎尾", km: 240, roadN: "雲林縣斗南鎮", roadS: "雲林縣斗南鎮"},
+              {name: "雲林系統交流道", cityN: "土庫、古坑", cityS: "土庫、古坑", km: 243, roadN: "雲林縣斗南鎮", roadS: "雲林縣斗南鎮"},
+              {name: "大林交流道", cityN: "溪口、大林", cityS: "大林、溪口", km: 250, roadN: "嘉義縣大林鎮", roadS: "嘉義縣大林鎮"},
+              {name: "民雄交流道", cityN: "新港、民雄", cityS: "民雄、新港", km: 257, roadN: "嘉義縣民雄鄉", roadS: "嘉義縣民雄鄉"},
+              {name: "嘉義交流道", cityN: "嘉義、北港、新港", cityS: "嘉義、北港、新港", km: 264, roadN: "嘉義市", roadS: "嘉義市"},
+              {name: "水上交流道", cityN: "朴子、太保、水上", cityS: "水上、朴子、太保", km: 270, roadN: "嘉義縣水上鄉", roadS: "嘉義縣水上鄉"},
+              {name: "嘉義系統交流道", cityN: "東石、水上", cityS: "水上、東石", km: 272, roadN: "嘉義縣水上鄉", roadS: "嘉義縣水上鄉"},
+              {name: "新營服務區", cityN: "", cityS: "", km: 284, roadN: "", roadS: ""},
+              {name: "新營交流道", cityN: "鹽水、新營", cityS: "新營、鹽水", km: 288, roadN: "台南市新營區", roadS: "台南市新營區"},
+              {name: "下營系統交流道", cityN: "學甲、玉井", cityS: "玉井、學甲", km: 299, roadN: "台南市下營區", roadS: "台南市下營區"},
+              {name: "麻豆交流道", cityN: "麻豆、佳里", cityS: "佳里、麻豆", km: 303, roadN: "台南市麻豆區", roadS: "台南市麻豆區"},
+              {name: "安定交流道", cityN: "安定、善化", cityS: "善化、安定", km: 311, roadN: "台南市安定區", roadS: "台南市安定區"},
+              {name: "台南系統交流道", cityN: "台南、新化", cityS: "新化、台南", km: 315, roadN: "台南市新市區", roadS: "台南市新市區"},
+              {name: "永康交流道", cityN: "台南、永康", cityS: "永康、台南", km: 319, roadN: "台南市永康區", roadS: "台南市永康區"},
+              {name: "大灣交流道", cityN: "台南、仁德", cityS: "台南、仁德", km: 324, roadN: "台南市永康區", roadS: "台南市永康區"},
+              {name: "台南交流道", cityN: "台南、仁德", cityS: "仁德、台南", km: 327, roadN: "台南市仁德區", roadS: "台南市仁德區"},
+              {name: "仁德系統交流道", cityN: "台南、關廟", cityS: "關廟、台南", km: 330, roadN: "台南市仁德區", roadS: "台南市仁德區"},
+              {name: "仁德服務區", cityN: "", cityS: "", km: 335, roadN: "", roadS: ""},
+              {name: "路竹交流道", cityN: "路竹、阿蓮", cityS: "阿蓮、路竹", km: 338, roadN: "高雄市路竹區", roadS: "高雄市路竹區"},
+              {name: "高科交流道", cityN: "高雄科學園區", cityS: "高雄科學園區", km: 342, roadN: "高雄市路竹區", roadS: "高雄市路竹區"},
+              {name: "岡山交流道", cityN: "岡山、燕巢", cityS: "燕巢、岡山", km: 349, roadN: "高雄市燕巢區", roadS: "高雄市燕巢區"},
+              {name: "楠梓交流道", cityN: "楠梓、仁武", cityS: "大社、楠梓", km: 356, roadN: "高雄市楠梓區", roadS: "高雄市楠梓區"},
+              {name: "鼎金系統交流道", cityN: "旗山、左營", cityS: "旗山、左營", km: 362, roadN: "高雄市仁武區", roadS: "高雄市仁武區"},
+              {name: "高雄交流道", cityN: "中正路（B）三多路（C）", cityS: "九如路（A）建國路（A）中正路（B）", km: 367, roadN: "高雄市三民區", roadS: "高雄市三民區"},
+              {name: "瑞隆路出口匝道", cityN: "------", cityS: "瑞隆路", km: 369, roadN: "高雄市鳳山區", roadS: "高雄市鳳山區"},
+              {name: "五甲系統交流道", cityN: "------", cityS: "屏東", km: 370, roadN: "高雄市鳳山區", roadS: "高雄市鳳山區"},
+              {name: "五甲交流道", cityN: "鳳山", cityS: "------", km: 371, roadN: "高雄市鳳山區", roadS: "高雄市鳳山區"},
+              {name: "高雄端", cityN: "------", cityS: "機場、市區", km: 372, roadN: "高雄市鳳山區", roadS: "高雄市鳳山區"},
+              {name: "高雄端", cityN: "------", cityS: "漁港路、旗津、第三~五貨櫃區", km: 373, roadN: "高雄市前鎮區", roadS: "高雄市前鎮區"},
+              {name: "高雄端", cityN: "------", cityS: "第一、二貨櫃區", km: 374, roadN: "高雄市前鎮區", roadS: "高雄市前鎮區"}
+            ]
+        },
+        {
+          name: "汐止－楊梅高架",
+          detail:
+            [
+              {name: '汐止端', cityN: '------', cityS: '------', km: 13, roadN: '新北市汐止區', roadS: '新北市汐止區'},
+              {name: '堤頂交流道', cityN: '堤頂大道', cityS: '堤頂大道', km: 18, roadN: '台北市內湖區', roadS: '台北市內湖區'},
+              {name: '下塔悠出口匝道', cityN: '濱江街', cityS: '------', km: 20, roadN: '台北市中山區', roadS: ''},
+              {name: '環北交流道', cityN: '環河北路', cityS: '------', km: 25, roadN: '台北市大同區', roadS: ''},
+              {name: '五股轉接道', cityN: '-------', cityS: '國道1號平面', km: 32, roadN: '', roadS: '新北市五股區'},
+              {name: '泰山轉接道', cityN: '五股', cityS: '-------', km: 35, roadN: '', roadS: ''},
+              {name: '機場系統交流道', cityN: '蘆竹、桃園機場', cityS: '蘆竹、桃園機場', km: 52, roadN: '桃園市桃園區', roadS: '桃園市桃園區'},
+              {name: '中壢轉接道', cityN: '中壢', cityS: '中壢', km: 59, roadN: '', roadS: ''},
+              {name: '楊梅端', cityN: '------', cityS: '------', km: 71, roadN: '', roadS: ''}
+            ]
+        },
+        {
+          name: "國二",
+          detail:
+            [
+              {name: '機場端(西)', cityN: '------', cityS: '------', km: 0, roadN: '桃園機場', roadS: ''},
+              {name: '大園交流道', cityN: '大園、埔心', cityS: '大園、埔心', km: 1, roadN: '桃園市大園區', roadS: '桃園市大園區'},
+              {name: '大竹交流道', cityN: '青埔、蘆竹', cityS: '蘆竹、青埔', km: 4, roadN: '桃園市蘆竹區', roadS: '桃園市蘆竹區'},
+              {name: '機場系統交流道', cityN: '林口、台北、中壢、湖口', cityS: '林口、台北、中壢、湖口', km: 8, roadN: '桃園市蘆竹區', roadS: '桃園市蘆竹區'},
+              {name: '南桃園交流道', cityN: '桃園', cityS: '桃園', km: 11, roadN: '桃園市桃園區', roadS: '桃園市桃園區'},
+              {name: '大湳交流道', cityN: '八德、鶯歌', cityS: '八德、鶯歌', km: 18, roadN: '桃園市八德區', roadS: '桃園市八德區'},
+              {name: '鶯歌系統交流道(東)', cityN: '------', cityS: '三峽、台北、大溪、新竹', km: 20, roadN: '', roadS: '新北市鶯歌區'}
+            ]
+        },
+        {
+          name: "國三",
+          detail:
+            [
+              {name: '基金交流道', cityN: '基隆、萬里', cityS: ' ------', km: 0, roadN: '基隆市安樂區', roadS: ''},
+              {name: '瑪東系統交流道', cityN: '大埔、瑞芳 ', cityS: '瑞芳、大埔', km: 2, roadN: '基隆市七堵區', roadS: '基隆市七堵區'},
+              {name: '汐止系統交流道', cityN: '五堵、內湖 ', cityS: '汐止、內湖', km: 10, roadN: '新北市汐止區', roadS: '新北市汐止區'},
+              {name: '新台五路交流道', cityN: '汐止、南港', cityS: '汐止、南港', km: 12, roadN: '新北市汐止區', roadS: '新北市汐止區'},
+              {name: '南港交流道', cityN: '南港', cityS: '南港', km: 14, roadN: '台北市南港區', roadS: '台北市南港區'},
+              {name: '南港系統交流道', cityN: '石碇、宜蘭', cityS: '石碇、宜蘭', km: 16, roadN: '台北市南港區', roadS: '台北市南港區'},
+              {name: '南深路出口匝道', cityN: '中央研究院', cityS: ' ------', km: 16, roadN: '台北市南港區', roadS: '台北市南港區'},
+              {name: '木柵交流道', cityN: '木柵、台北、深坑 ', cityS: '木柵、台北、深坑', km: 20, roadN: '台北市文山區', roadS: '台北市文山區'},
+              {name: '木柵休息站', cityN: '', cityS: '', km: 25, roadN: '', roadS: ''},
+              {name: '新店交流道', cityN: '新店', cityS: '新店', km: 26, roadN: '新北市新店區', roadS: '新北市新店區'},
+              {name: '安坑交流道', cityN: '安坑、新店、台北 ', cityS: '安坑、新店', km: 31, roadN: '新北市新店區', roadS: '新北市新店區'},
+              {name: '中和交流道', cityN: '中和、板橋', cityS: '中和、板橋', km: 35, roadN: '新北市中和區', roadS: '新北市中和區'},
+              {name: '土城交流道', cityN: '土城、板橋 ', cityS: '土城、板橋', km: 42, roadN: '新北市土城區', roadS: '新北市土城區'},
+              {name: '樹林交流道', cityN: '------ ', cityS: '樹林、三峽', km: 47, roadN: '', roadS: '新北市樹林區'},
+              {name: '三鶯交流道', cityN: '鶯歌,三峽（A）三峽（B）', cityS: '鶯歌（A）三峽（B）', km: 50, roadN: '新北市三峽區', roadS: '新北市三峽區'},
+              {name: '鶯歌系統交流道', cityN: '桃園、桃園機場', cityS: '桃園、桃園機場', km: 54, roadN: '新北市鶯歌區', roadS: '新北市鶯歌區'},
+              {name: '大溪交流道', cityN: '慈湖、大溪、中壢、平鎮 ', cityS: '慈湖、大溪、中壢、平鎮', km: 62, roadN: '桃園市大溪區', roadS: '桃園市大溪區'},
+              {name: '龍潭交流道', cityN: '龍潭', cityS: '龍潭 ', km: 68, roadN: '桃園市龍潭區', roadS: '桃園市龍潭區'},
+              {name: '關西服務區', cityN: '', cityS: '', km: 76, roadN: '', roadS: ''},
+              {name: '關西交流道', cityN: '關西、新埔', cityS: '關西、新埔', km: 79, roadN: '新竹縣關西鎮', roadS: '新竹縣關西鎮'},
+              {name: '竹林交流道', cityN: '竹東、芎林 ', cityS: '竹東、芎林', km: 90, roadN: '新竹縣芎林鄉', roadS: '新竹縣芎林鄉'},
+              {name: '寶山休息站', cityN: '', cityS: '', km: 96, roadN: '', roadS: ''},
+              {name: '寶山交流道', cityN: '寶山、科學工業園區 ', cityS: '寶山、科學工業園區', km: 98, roadN: '新竹縣寶山鄉', roadS: '新竹縣寶山鄉'},
+              {name: '新竹系統交流道', cityN: '新竹、頭份', cityS: '新竹、頭份', km: 100, roadN: '新竹縣寶山鄉', roadS: '新竹縣寶山鄉'},
+              {name: '茄苳交流道', cityN: '新竹 ', cityS: '新竹', km: 103, roadN: '新竹市', roadS: '新竹市'},
+              {name: '香山交流道', cityN: '香山、竹南', cityS: '香山、頭份', km: 109, roadN: '新竹市', roadS: '新竹市'},
+              {name: '西濱交流道', cityN: '------ ', cityS: '台61 快速公路', km: 115, roadN: '', roadS: '苗栗縣竹南鎮'},
+              {name: '竹南交流道', cityN: '竹南', cityS: '竹南', km: 119, roadN: '苗栗縣竹南鎮', roadS: '苗栗縣竹南鎮'},
+              {name: '大山交流道', cityN: '造橋、大山', cityS: '造橋、大山', km: 124, roadN: '苗栗縣後龍鎮', roadS: '苗栗縣後龍鎮'},
+              {name: '後龍交流道', cityN: '苗栗、後龍 ', cityS: '苗栗、後龍', km: 130, roadN: '苗栗縣後龍鎮', roadS: '苗栗縣後龍鎮'},
+              {name: '西湖服務區', cityN: '', cityS: '', km: 134, roadN: '', roadS: ''},
+              {name: '通霄交流道', cityN: '銅鑼、通霄 ', cityS: '銅鑼、通霄 ', km: 144, roadN: '苗栗縣通霄鎮', roadS: '苗栗縣通霄鎮'},
+              {name: '苑裡交流道', cityN: '三義、苑裡', cityS: '三義、苑裡', km: 156, roadN: '苗栗縣苑裡鎮', roadS: '苗栗縣苑裡鎮'},
+              {name: '大甲交流道', cityN: '外埔、大甲 ', cityS: '外埔、大甲', km: 164, roadN: '台中市外埔區', roadS: '台中市外埔區'},
+              {name: '中港系統交流道', cityN: '神岡、清水', cityS: '神岡、清水', km: 169, roadN: '台中市清水區', roadS: '台中市清水區'},
+              {name: '清水服務區', cityN: '', cityS: '', km: 172, roadN: '', roadS: ''},
+              {name: '沙鹿交流道', cityN: '大雅、沙鹿', cityS: '大雅、沙鹿', km: 176, roadN: '台中市沙鹿區', roadS: '台中市沙鹿區'},
+              {name: '龍井交流道', cityN: '台中、龍井', cityS: '台中、龍井', km: 182, roadN: '台中市龍井區', roadS: '台中市龍井區'},
+              {name: '和美交流道', cityN: '和美、伸港 ', cityS: '和美、伸港', km: 191, roadN: '彰化縣和美鎮', roadS: '彰化縣和美鎮'},
+              {name: '彰化系統交流道', cityN: '台中、彰化 ', cityS: '台中、彰化', km: 196, roadN: '彰化市', roadS: '彰化市'},
+              {name: '快官交流道', cityN: '台中、彰化 ', cityS: '台中、彰化', km: 202, roadN: '彰化市', roadS: '彰化市'},
+              {name: '烏日交流道', cityN: '烏日', cityS: '烏日', km: 207, roadN: '台中市烏日區', roadS: '台中市烏日區'},
+              {name: '中投交流道', cityN: '台中、大里', cityS: '大里', km: 209, roadN: '台中市霧峰區', roadS: '台中市霧峰區'},
+              {name: '霧峰交流道', cityN: '霧峰、太平 ', cityS: '霧峰、太平', km: 211, roadN: '台中市霧峰區', roadS: '台中市霧峰區'},
+              {name: '霧峰系統交流道', cityN: '國姓、埔里', cityS: '國姓、埔里 ', km: 214, roadN: '南投縣埔里鎮', roadS: '南投縣埔里鎮'},
+              {name: '草屯交流道', cityN: '(A)芬園 (B)草屯 ', cityS: '草屯、芬園', km: 217, roadN: '南投縣草屯鎮', roadS: '南投縣草屯鎮'},
+              {name: '中興系統交流道', cityN: '員林', cityS: '員林', km: 222, roadN: '南投縣草屯鎮', roadS: '南投縣草屯鎮'},
+              {name: '中興交流道', cityN: '南投、中興新村', cityS: '南投、中興新村 ', km: 224, roadN: '南投縣草屯鎮', roadS: '南投縣草屯鎮'},
+              {name: '南投交流道', cityN: '南投、中寮', cityS: '南投、中寮', km: 228, roadN: '南投縣南投市', roadS: '南投縣南投市'},
+              {name: '南投服務區', cityN: '', cityS: '', km: 231, roadN: '', roadS: ''},
+              {name: '名間交流道', cityN: '名間、集集', cityS: '名間、集集 ', km: 237, roadN: '南投縣名間鄉', roadS: '南投縣名間鄉'},
+              {name: '竹山交流道', cityN: '竹山、鹿谷', cityS: '竹山、鹿谷', km: 243, roadN: '南投縣竹山鎮', roadS: '南投縣竹山鎮'},
+              {name: '南雲交流道', cityN: '竹山、林內', cityS: '竹山、林內', km: 250, roadN: '南投縣竹山鎮', roadS: '南投縣竹山鎮'},
+              {name: '斗六交流道', cityN: '斗六、林內 ', cityS: '斗六、林內', km: 260, roadN: '雲林縣林內鄉', roadS: '雲林縣林內鄉'},
+              {name: '古坑系統交流道', cityN: '斗六 、台西', cityS: '台西、古坑', km: 269, roadN: '雲林縣古坑鄉', roadS: '雲林縣古坑鄉'},
+              {name: '古坑交流道', cityN: '古坑', cityS: '台西、古坑', km: 271, roadN: '雲林縣古坑鄉', roadS: '雲林縣古坑鄉'},
+              {name: '古坑服務區', cityN: '', cityS: '', km: 276, roadN: '', roadS: ''},
+              {name: '梅山交流道', cityN: '梅山、大林', cityS: '梅山、大林', km: 279, roadN: '嘉義縣大林鎮', roadS: '嘉義縣大林鎮'},
+              {name: '竹崎交流道', cityN: '竹崎、民雄、嘉義 ', cityS: '竹崎、民雄、嘉義', km: 290, roadN: '嘉義縣民雄鄉', roadS: '嘉義縣民雄鄉'},
+              {name: '中埔交流道', cityN: '中埔、嘉義', cityS: '中埔、嘉義', km: 297, roadN: '嘉義縣中埔鄉', roadS: '嘉義縣中埔鄉'},
+              {name: '水上系統交流道', cityN: '水上、東石', cityS: '水上、東石', km: 300, roadN: '嘉義縣水上鄉', roadS: '嘉義縣水上鄉'},
+              {name: '白河交流道', cityN: '東山、白河 ', cityS: '東山、白河', km: 311, roadN: '臺南市白河區', roadS: '臺南市白河區'},
+              {name: '東山服務區', cityN: '', cityS: '', km: 319, roadN: '', roadS: ''},
+              {name: '柳營交流道', cityN: '東山、柳營', cityS: '東山、柳營', km: 322, roadN: '臺南市東山區', roadS: '臺南市東山區'},
+              {name: '烏山頭交流道', cityN: '官田、六甲 ', cityS: '官田、六甲', km: 329, roadN: '臺南市官田區', roadS: '臺南市官田區'},
+              {name: '官田系統交流道', cityN: '官田、大內 ', cityS: '官田、玉井', km: 334, roadN: '臺南市官田區', roadS: '臺南市官田區'},
+              {name: '善化交流道', cityN: '善化、山上 ', cityS: '善化、山上', km: 340, roadN: '臺南市善化區', roadS: '臺南市善化區'},
+              {name: '新化系統交流道', cityN: '台南、新化 ', cityS: '新化、台南', km: 346, roadN: '臺南市新市區', roadS: '臺南市新市區'},
+              {name: '新化休息站', cityN: '', cityS: '', km: 350, roadN: '', roadS: ''},
+              {name: '關廟交流道', cityN: '關廟、歸仁、台南', cityS: '關廟、歸仁、台南', km: 357, roadN: '臺南市關廟區', roadS: '臺南市關廟區'},
+              {name: '關廟服務區', cityN: '', cityS: '', km: 363, roadN: '', roadS: ''},
+              {name: '田寮交流道', cityN: '田寮、阿蓮', cityS: '田寮、阿蓮', km: 369, roadN: '高雄市田寮區', roadS: '高雄市田寮區'},
+              {name: '燕巢系統交流道', cityN: '旗山、高雄', cityS: '旗山、高雄', km: 383, roadN: '高雄市燕巢區', roadS: '高雄市燕巢區'},
+              {name: '九如交流道', cityN: '里港、九如 ', cityS: '里港、屏東', km: 391, roadN: '屏東縣九如鄉', roadS: '屏東縣九如鄉'},
+              {name: '長治交流道', cityN: '長治、三地門 ', cityS: '長治、三地門', km: 400, roadN: '屏東縣長治鄉', roadS: '屏東縣長治鄉'},
+              {name: '麟洛交流道', cityN: '屏東、內埔', cityS: '麟洛、內埔', km: 407, roadN: '屏東縣麟洛鄉', roadS: '屏東縣麟洛鄉'},
+              {name: '竹田系統交流道', cityN: '竹田、高雄', cityS: '竹田、高雄', km: 415, roadN: '屏東縣竹田鄉', roadS: '屏東縣竹田鄉'},
+              {name: '崁頂交流道', cityN: ' --', cityS: '崁頂', km: 421, roadN: '', roadS: '屏東縣潮州鎮'},
+              {name: '南州交流道', cityN: '新埤、南州 ', cityS: '新埤、南州', km: 424, roadN: '屏東縣南州鄉', roadS: '屏東縣南州鄉'},
+              {name: '林邊交流道', cityN: '-- ', cityS: '林邊、東港', km: 430, roadN: '', roadS: '屏東縣林邊鄉'},
+              {name: '大鵬灣端', cityN: ' --', cityS: '大鵬灣', km: 431, roadN: '', roadS: '屏東縣林邊鄉'}
+            ]
+        },
+        {
+          name: "國三甲",
+          detail:
+            [
+              {name: '台北端(西)', cityN: '辛亥路', cityS: '------', km: 0 , roadN: '台北市大安區', roadS: ''},
+              {name: '萬芳交流道', cityN: '木柵路', cityS: '木柵路', km: 3, roadN: '台北市文山區', roadS: '台北市文山區'},
+              {name: '木柵交流道', cityN: '新店（A）汐止（B）', cityS: '新店（A）汐止（B）', km: 5, roadN: '台北市文山區', roadS: '台北市文山區'},
+              {name: '深坑端(東)', cityN: '-------', cityS: '-------', km: 6, roadN: '新北市深坑區', roadS: '新北市深坑區'}
+            ]
+        },
+        {
+          name: "國四",
+          detail:
+            [
+              {name: '清水端(西)', cityN: '清水、台中港', cityS: '------', km: 0, roadN: '台中市清水區', roadS: ''},
+              {name: '中港系統交流道', cityN: '沙鹿（A）大甲（B）', cityS: '沙鹿（A）大甲（B）', km: 2, roadN: '台中市清水區', roadS: '台中市清水區'},
+              {name: '神岡交流道', cityN: '神岡', cityS: '神岡', km: 9, roadN: '台中市神岡區', roadS: '台中市神岡區'},
+              {name: '台中系統交流道', cityN: '后里、台中', cityS: '后里、台中', km: 11, roadN: '台中市神岡區', roadS: '台中市神岡區'},
+              {name: '后豐交流道', cityN: '-------', cityS: '后里、豐原', km: 14, roadN: '', roadS: '台中市豐原區'},
+              {name: '豐原端(東)', cityN: '-------', cityS: '豐原、石岡、東勢', km: 17, roadN: '', roadS: '台中市豐原區'}
+            ]
+        },
+        {
+          name: "國五",
+          detail:
+            [
+              {name: '南港系統交流道(北)', cityN: '木柵、汐止', cityS: '------', km: 0, roadN: '台北市南港區', roadS: ''},
+              {name: '石碇交流道', cityN: '石碇、深坑', cityS: '石碇、深坑', km: 4, roadN: '新北市石碇區', roadS: '新北市石碇區'},
+              {name: '石碇服務區', cityN: '', cityS: '', km: 4.1, roadN: '', roadS: ''},
+              {name: '坪林行控中心專用道', cityN: '坪林', cityS: '坪林', km: 14, roadN: '新北市坪林區', roadS: '新北市坪林區'},
+              {name: '頭城交流道', cityN: '頭城、礁溪', cityS: '頭城、礁溪', km: 30, roadN: '宜蘭縣頭城鎮', roadS: '宜蘭縣頭城鎮'},
+              {name: '宜蘭交流道', cityN: '壯圍、宜蘭', cityS: '壯圍、宜蘭', km: 38, roadN: '宜蘭縣宜蘭市', roadS: '宜蘭縣宜蘭市'},
+              {name: '羅東交流道', cityN: '羅東、五結', cityS: '羅東、五結', km: 47, roadN: '宜蘭縣羅東鎮', roadS: '宜蘭縣羅東鎮'},
+              {name: '蘇澳交流道(南)', cityN: '------', cityS: '蘇澳、冬山', km: 54, roadN: '', roadS: '宜蘭縣蘇澳鎮'}
+            ]
+        },
+        {
+          name: "國六",
+          detail:
+            [
+              {name: '霧峰系統交流道(西)', cityN: '南投、台中', cityS: '----', km: 0, roadN: '台中市霧峰區', roadS: ''},
+              {name: '舊正交流道', cityN: '霧峰、草屯', cityS: '----', km:      3, roadN: '台中市霧峰區', roadS: ''},
+              {name: '東草屯交流道', cityN: '草屯', cityS: '草屯', km:  5, roadN: '南投縣草屯鎮', roadS: '南投縣草屯鎮'},
+              {name: '國姓交流道', cityN: '國姓', cityS: '國姓', km: 17, roadN: '', roadS: ''},
+              {name: '北山交流道', cityN: '----', cityS: '北山', km: 25, roadN: '', roadS: '南投縣國姓鄉'},
+              {name: '愛蘭交流道', cityN: '埔里、魚池', cityS: '埔里、魚池', km: 29, roadN: '南投縣埔里鎮', roadS: '南投縣埔里鎮'},
+              {name: '埔里交流道', cityN: '----', cityS: '國姓、埔里', km: 34, roadN: '', roadS: '南投縣埔里鎮'},
+              {name: '埔里端(東)', cityN: '----', cityS: '埔里、霧社', km: 37, roadN: '', roadS: '南投縣埔里鎮'}
+            ]
+        },
+        {
+          name: "國八",
+          detail:
+            [
+              {name: '台南端(西)', cityN: '台南市區', cityS: '------', km: 0, roadN: '台南市安南區', roadS: ''},
+              {name: '新吉交流道 ', cityN: '安南、西港', cityS: '------', km: 2, roadN: '台南市安定區', roadS: ''},
+              {name: '台南系統交流道', cityN: '台中、台南', cityS: '台中、台南', km: 6, roadN: '台南市新市區', roadS: '台南市新市區'},
+              {name: '新市交流道', cityN: '新市、永康、台南科學園區', cityS: '永康、新市、台南科學園區', km: 9, roadN: '台南市新市區', roadS: '台南市新市區'},
+              {name: '新化系統交流道', cityN: '屏東、斗六', cityS: '屏東、斗六', km: 14, roadN: '台南市新化區', roadS: '台南市新化區'},
+              {name: '新化端(東)', cityN: '-------', cityS: '新化、山上、左鎮', km: 15, roadN: '', roadS: '台南市新化區'}
+            ]
+        },
+        {
+          name: "國十",
+          detail:
+            [
+              {name: '左營端(西)', cityN: '自由路、博愛路', cityS: '------', km: 0, roadN: '高雄市左營區', roadS: ''},
+              {name: '鼎金系統交流道', cityN: '台南、高雄', cityS: '高雄', km: 1, roadN: '高雄市仁武區', roadS: '高雄市仁武區'},
+              {name: '仁武交流道', cityN: '仁武、大樹', cityS: '仁武、大樹', km: 6, roadN: '高雄市仁武區', roadS: '高雄市仁武區'},
+              {name: '燕巢交流道', cityN: '燕巢', cityS: '燕巢', km: 13, roadN: '高雄市燕巢區', roadS: '高雄市燕巢區'},
+              {name: '燕巢系統交流道', cityN: '屏東、台南', cityS: '屏東、台南', km: 19, roadN: '高雄市燕巢區', roadS: '高雄市燕巢區'},
+              {name: '嶺口交流道', cityN: '------', cityS: '大樹、旗山', km: 22, roadN: '', roadS: '高雄市旗山區 '},
+              {name: '里港交流道', cityN: '------', cityS: '里港', km: 25, roadN: '', roadS: '屏東縣里港鄉'},
+              {name: '旗山端(東)', cityN: '------', cityS: '旗山、美濃、里港', km: 33, roadN: '', roadS: '高雄市旗山區 '}
+            ]
+        }
       ],
       result: ""
     },
     methods: {
       getResult() {
         var vm = this;
-        var _arr = vm.roadData[vm.selectedRoad];
-        if (vm.selectedDirection === "北上") {
-          var arr = _arr.filter(function(item, index, array){
-            return item.km <= vm.km && item.roadN !== "";
+        if (vm.selectedRoad !== "" && vm.selectedDirection !== "" && vm.km !== "") {
+          var _arr = vm.roadData.filter(function(item, index, array) {
+            return item.name === vm.selectedRoad;
           });
-          vm.result = arr[arr.length-1]
+          if (vm.selectedDirection === "北上" || vm.selectedDirection === "西向") {
+            var arr = _arr[0].detail.filter(function(item, index, array){
+              return item.km <= vm.km && item.roadN !== "";
+            });
+            vm.result = arr[arr.length-1];
+            $("#distance_address").val(vm.result.roadS);
+          } else {
+            var arr = _arr[0].detail.filter(function(item, index, array){
+              return item.km >= vm.km && item.roadS !== "";
+            });
+            vm.result = arr[0];
+            $("#distance_address").val(vm.result.roadN);
+          }
         } else {
-          var arr = _arr.filter(function(item, index, array){
-            return item.km >= vm.km && item.roadS !== "";
-          });
-          vm.result = arr[0]
+          $("#freeway-alert").html("請輸入國道方向與里程");
         }
       },
       showFreeway() {
-        $("#freewayModal").modal("show");
+        var vm = this
+        if (vm.selectedRoad === "") {
+          $("#freeway-alert").html("請選擇國道");
+        } else {
+          $("#freewayModal").modal("show");
+        }
       }
     },
     watch: {
       selectedRoad(value) {
         var vm = this;
-        if( (value&1) === 0 ) {
+        if(value === "國一" || value === "汐止－楊梅高架" || value === "國三" || value === "國三甲" || value === "國五") {
           vm.selectDirectionData = ["北上","南下"];
         }
         else {
@@ -238,7 +449,13 @@
     },
     computed: {
       selectFreeway() {
-        return this.roadData[this.selectedRoad]
+        var vm = this;
+        if (vm.selectedRoad !== "") {
+          var _arr = vm.roadData.filter(function(item, index, array) {
+            return item.name === vm.selectedRoad;
+          });
+          return _arr[0];
+        }
       }
     }
   });
