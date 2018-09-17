@@ -13,8 +13,8 @@
     <h3>國道速查</h3>
       <div class="input-group mb-3">
         <div class="input-group-prepend">
-          <label class="input-group-text" for="inputGroupSelect01" v-if="selectedDirection ==='北上'">米其林區域為：{{ result.roadN }}</label>
-          <label class="input-group-text" for="inputGroupSelect01" v-else>米其林區域為：{{ result.roadS }}</label>
+          <label class="input-group-text text-primary" for="inputGroupSelect01" v-if="selectedDirection ==='北上'">{{ result.roadN }}</label>
+          <label class="input-group-text text-primary" for="inputGroupSelect01" v-else>{{ result.roadS }}</label>
         </div>
         <select class="custom-select" id="inputGroupSelect01" v-model="selectedRoad">
           <option disabled value="">請選擇國道</option>
@@ -69,9 +69,9 @@
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th>交流道</th>
-                  <th>K數</th>
-                  <th style="width: 10%;">鄉鎮市</th>
+                  <th style="width: 20%;">交流道</th>
+                  <th style="width: 10%;">K數</th>
+                  <th style="width: 20%;">米其林鄉鎮市</th>
                   <th>南下預告出口</th>
                   <th>北上預告出口</th>
                 </tr>
