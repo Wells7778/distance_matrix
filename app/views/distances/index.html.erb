@@ -414,15 +414,15 @@
           });
           if (vm.selectedDirection === "北上" || vm.selectedDirection === "西向") {
             var arr = _arr[0].detail.filter(function(item, index, array){
-              return item.km <= vm.km && item.roadN !== "";
+              return item.km >= vm.km && item.roadN !== "";
             });
-            vm.result = arr[arr.length-1];
+            vm.result = arr[0];
             $("#distance_address").val(vm.result.roadN);
           } else {
             var arr = _arr[0].detail.filter(function(item, index, array){
-              return item.km >= vm.km && item.roadS !== "";
+              return item.km <= vm.km && item.roadS !== "";
             });
-            vm.result = arr[0];
+            vm.result = arr[arr.length-1];
             $("#distance_address").val(vm.result.roadS);
           }
         } else {
