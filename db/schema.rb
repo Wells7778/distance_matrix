@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180911121911) do
+ActiveRecord::Schema.define(version: 20181002153932) do
 
   create_table "distances", force: :cascade do |t|
     t.string "address"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20180911121911) do
     t.text "respond_list"
     t.text "geo_address"
     t.string "post_code"
+    t.string "latlng"
   end
 
   create_table "posts", force: :cascade do |t|
