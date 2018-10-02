@@ -2,10 +2,14 @@ class Distance < ApplicationRecord
   serialize :respond_list
 
   def self.geocode(address)
-    url = 'https://maps.googleapis.com/maps/api/geocode/json'
+    url = 'https://maps.googleapis.com/maps/api/geocode/json?'
     key = $settings['secret']
-    params = {address: address, language: 'zh-TW', key: key }
-    url = url + "?" + params.to_query
+    if address.include?(",")
+      @params = {latlng: address, language: 'zh-TW', key: key }
+    else
+      @params = {address: address, language: 'zh-TW', key: key }
+    end
+    url = url + @params.to_query
     json_rep = RestClient.get url
     #, {params: {address: address, language: 'zh-TW', key: key }} =>因放上heroku查詢字串有問題改用拼url方式測試
     respond = JSON.parse(json_rep)

@@ -22,8 +22,8 @@
         <th><%= sort_link(@ransack, :no, "代號", default_order: :asc) %></th>
         <th>名稱</th>
         <th>營業時間</th>
-        <th>經度</th>
         <th>緯度</th>
+        <th>經度</th>
         <th>#</th>
       </tr>
     </thead>
@@ -69,11 +69,11 @@
                     <%= text_field_tag :service_time, service.service_time, class: "form-control" %>
                   </div>
                   <div class="form-group">
-                    <%= label_tag :lng, "經度" %>
+                    <%= label_tag :lng, "緯度" %>
                     <%= text_field_tag :lng, service.lng, class: "form-control" %>
                   </div>
                   <div class="form-group">
-                    <%= label_tag :lat, "緯度" %>
+                    <%= label_tag :lat, "經度" %>
                     <%= text_field_tag :lat, service.lat, class: "form-control" %>
                   </div>
                   <%= submit_tag "更新", class: "btn btn-primary" %>
@@ -119,11 +119,11 @@
               <%= f.text_field :service_time, class: "form-control" %>
             </div>
             <div class="form-group">
-              <%= f.label :lng, "經度" %>
+              <%= f.label :lng, "緯度" %>
               <%= f.text_field :lng, class: "form-control" %>
             </div>
             <div class="form-group">
-              <%= f.label :lat, "緯度" %>
+              <%= f.label :lat, "經度" %>
               <%= f.text_field :lat, class: "form-control" %>
             </div>
             <%= f.submit "新增", :disable_with => 'Submiting...', class: "btn btn-primary" %>
