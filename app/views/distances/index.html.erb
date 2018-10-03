@@ -3,21 +3,20 @@
     <h1>米其林服務網搜尋</h1>
 
     <%= form_tag("/distances", method: "post", remote: true) do %>
-      <input placeholder="請輸入搜尋地址或地標，僅交流道與服務區會有自動完成提示"
+      <input placeholder="請輸入搜尋地址或地標，僅交流道與服務區會有自動完成提示，請用滑鼠或Tab選擇"
               autofocus="autofocus"
               required
               type="text"
               name="distance[address]"
               id="distance_address"
-              class="form-control w-75 mb-3 d-inline"
+              class="form-control"
               v-model="search"
               @input="onChange"
               @keydown.down="onArrowDown"
               @keydown.up="onArrowUp"
               @keydown.tab.prevent="onTab">
       <%= hidden_field 'distance', 'latlng' %>
-      <%= submit_tag "搜尋", class: "btn btn-primary" %>
-      <ul v-show="isOpen" class="list-group w75">
+      <ul v-show="isOpen" class="list-group mb-3">
         <li class="list-group-item" v-if="!isLoading">查無交流道＆服務區資料</li>
         <li
           v-else
@@ -30,7 +29,7 @@
           {{ result }}
         </li>
       </ul>
-
+      <%= submit_tag "搜尋", class: "btn btn-primary" %>
     <% end %>
     <hr>
 
