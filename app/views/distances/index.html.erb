@@ -1,14 +1,36 @@
 <div class="row" id="app">
   <div class="col-sm-10 offset-sm-1">
     <h1>米其林服務網搜尋</h1>
-    <%= form_for @distance, remote: true do |f| %>
-      <div class="form-group">
-        <%= f.text_field :address, placeholder: "請輸入搜尋地址或地標", class: "form-control required", autofocus: true, required: "" %>
-      </div>
-      <%= f.hidden_field :latlng %>
-      <div class="form-group">
-        <%= f.submit "搜尋", class: "btn btn-primary" %>
-      </div>
+
+    <%= form_tag("/distances", method: "post", remote: true) do %>
+      <input placeholder="請輸入搜尋地址或地標，僅交流道與服務區會有自動完成提示"
+              autofocus="autofocus"
+              required
+              type="text"
+              name="distance[address]"
+              id="distance_address"
+              class="form-control w-75 mb-3 d-inline"
+              v-model="search"
+              @input="onChange"
+              @keydown.down="onArrowDown"
+              @keydown.up="onArrowUp"
+              @keydown.tab.prevent="onTab">
+      <%= hidden_field 'distance', 'latlng' %>
+      <%= submit_tag "搜尋", class: "btn btn-primary" %>
+      <ul v-show="isOpen" class="list-group w75">
+        <li class="list-group-item" v-if="!isLoading">查無交流道＆服務區資料</li>
+        <li
+          v-else
+          v-for="(result, i) in results"
+          :key="i"
+          @click="setResult(result)"
+          class="list-group-item"
+          :class="{ 'active': i === arrowCounter }"
+          @mouseover="arrowCounter = i">
+          {{ result }}
+        </li>
+      </ul>
+
     <% end %>
     <hr>
 
@@ -31,7 +53,6 @@
     </div>
     <p id="freeway-alert" class="text-danger text-center"></p>
     <hr>
-    <autocomplete :items="interChanges" @setlat="fastSetInterChange" @clear-input="clearInput"></autocomplete>
     <hr>
     <h3>搜尋紀錄</h3>
     <table class="table table-striped">
@@ -119,145 +140,7 @@
   </div>
 </div>
 
-<script type="text/x-template" id="autocomplete">
-<div>
-  <h3>交流道&服務區快選</h3>
-  <div class="form-inline">
-    <div class="form-group">
-      <input v-model="search"
-        placeholder="請輸入交流道"
-        class="form-control"
-        type="text"
-        @keydown.down="onArrowDown"
-        @keydown.up="onArrowUp"
-        @keydown.enter="onEnter"
-        @input="onChange">
-    </div>
-    <div class="form-group">
-      <button type="button" class="btn btn-primary" @click="setLatLng">轉換座標</button>
-    </div>
-  </div>
-  <ul
-    v-show="isOpen"
-    class="list-group">
-    <li
-      class="list-group-item"
-      v-if="isLoading">
-      查無資料
-    </li>
-    <li
-      v-else
-      v-for="(result, i) in results"
-      :key="i"
-      @click="setResult(result)"
-      class="list-group-item"
-      :class="{ 'active': i === arrowCounter }">
-      {{ result }}
-    </li>
-  </ul>
-</div>
-</script>
-
 <script>
-  var Autocomplete = {
-    template: "#autocomplete",
-    data() {
-      return {
-        search: "",
-        results: [],
-        isOpen: false,
-        isLoading: false,
-        arrowCounter: -1
-      }
-    },
-    props: {
-      items: {
-        type: Array,
-        default: () => []
-      }
-    },
-    methods: {
-      onChange() {
-        if (this.search !== "") {
-          this.$emit('input', this.search);
-          this.filterResults();
-          this.isOpen = true;
-        } else {
-          this.isOpen = false;
-        }
-      },
-      filterResults() {
-        var _items = this.items.map(function (item, index, array) {
-          return item.name
-        });
-        this.results = _items.filter(item => item.indexOf(this.search) > -1);
-      },
-      setResult(result) {
-        var vm = this;
-        if (vm.results.length !== 0) {
-          vm.search = result;
-          vm.isOpen = false;
-        }
-        if (vm.results.length !== 0 && vm.search === vm.results[0]) {
-          vm.$emit('setlat', vm.search);
-        }
-      },
-      onArrowDown() {
-        if (this.arrowCounter < this.results.length) {
-          this.arrowCounter = this.arrowCounter + 1;
-        }
-      },
-      onArrowUp() {
-        if (this.arrowCounter > 0) {
-          this.arrowCounter = this.arrowCounter - 1;
-        }
-      },
-      onEnter() {
-        var vm = this;
-        if (vm.results.length !== 0) {
-          vm.search = vm.results[vm.arrowCounter];
-          vm.isOpen = false;
-          vm.arrowCounter = -1;
-        }
-        if (vm.results.length !== 0 && vm.search === vm.results[0]) {
-          vm.$emit('setlat', vm.search);
-        }
-      },
-      handleClickOutside(evt) {
-        if (!this.$el.contains(evt.target)) {
-          this.isOpen = false;
-          this.arrowCounter = -1;
-        }
-      },
-      setLatLng() {
-        if (this.search !== "" && this.results.length != 0) {
-          this.$emit('setlat', this.search);
-        }
-      }
-    },
-    watch: {
-      results() {
-        if (this.results.length === 0) {
-          this.isLoading = true;
-        } else {
-          this.isLoading = false;
-        }
-      },
-      search() {
-        var vm = this;
-        if (vm.search == "") {
-          this.$emit('clear-input');
-        }
-      }
-    },
-    mounted() {
-      document.addEventListener('click', this.handleClickOutside);
-    },
-    destroyed() {
-      document.removeEventListener('click', this.handleClickOutside);
-    }
-  }
-
   var app = new Vue({
     el: "#app",
     data: {
@@ -549,9 +432,11 @@
         }
       ],
       result: "",
-    },
-    components: {
-      "autocomplete": Autocomplete
+      search: "",
+      results: [],
+      isOpen: false,
+      isLoading: false,
+      arrowCounter: -1
     },
     methods: {
       getResult() {
@@ -565,14 +450,14 @@
               return item.km >= vm.km && item.coordsN !== "";
             });
             vm.result = arr[0];
-            $("#distance_address").val(vm.result.name);
+            vm.search = vm.result.name;
             $("#distance_latlng").val(vm.result.coordsN);
           } else {
             var arr = _arr[0].detail.filter(function(item, index, array){
               return item.km <= vm.km && item.coordsS !== "";
             });
             vm.result = arr[arr.length-1];
-            $("#distance_address").val(vm.result.name);
+            vm.search = vm.result.name;
             $("#distance_latlng").val(vm.result.coordsS);
           }
         } else {
@@ -608,11 +493,61 @@
           alert("該交流道無座標，請重新選擇");
         } else {
           $("#distance_latlng").val(result.coords);
-          $("#distance_address").val(result.name).focus();
+          $("#distance_address").val(result.name);
         }
       },
       clearInput() {
         $("#distance_address").val("");
+      },
+      onChange() {
+        if (this.search !== "") {
+          this.$emit('input', this.search);
+          this.filterResults();
+          this.isOpen = true;
+        } else {
+          this.isOpen = false;
+        }
+      },
+      filterResults() {
+        var _items = this.interChanges.map(function (item, index, array) {
+          return item.name
+        });
+        this.results = _items.filter(item => item.indexOf(this.search) > -1);
+      },
+      setResult(result) {
+        var vm = this;
+        if (vm.results.length !== 0) {
+          vm.search = result;
+          vm.isOpen = false;
+        }
+      },
+      handleClickOutside(evt) {
+        if (!this.$el.contains(evt.target)) {
+          this.isOpen = false;
+          this.arrowCounter = -1;
+        }
+      },
+      onArrowDown() {
+        if (this.arrowCounter < this.results.length) {
+          this.arrowCounter = this.arrowCounter + 1;
+        }
+      },
+      onArrowUp() {
+        if (this.arrowCounter > 0) {
+          this.arrowCounter = this.arrowCounter - 1;
+        }
+      },
+      onTab() {
+        var vm = this;
+        if (vm.isLoading && vm.isOpen) {
+          vm.search = vm.results[vm.arrowCounter];
+          var result = vm.interChanges.find(function (item) {
+            return item.name === vm.search;
+          });
+          $("#distance_latlng").val(result.coords);
+          vm.arrowCounter = -1;
+          vm.isOpen = false;
+        }
       }
     },
     watch: {
@@ -625,6 +560,14 @@
           vm.selectDirectionData = ["東向","西向"];
         }
       },
+      results() {
+        var vm = this;
+        if (vm.results.length === 0) {
+          vm.isLoading = false;
+        } else {
+          vm.isLoading = true;
+        }
+      }
     },
     computed: {
       selectFreeway() {
@@ -651,6 +594,12 @@
         });
         return result;
       }
+    },
+    mounted() {
+      document.addEventListener('click', this.handleClickOutside);
+    },
+    destroyed() {
+      document.removeEventListener('click', this.handleClickOutside);
     }
   });
 </script>
