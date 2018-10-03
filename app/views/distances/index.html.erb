@@ -4,8 +4,6 @@
 
     <%= form_tag("/distances", method: "post", remote: true) do %>
       <input placeholder="請輸入搜尋地址或地標，僅交流道與服務區會有自動完成提示，請用滑鼠或Tab選擇"
-              autofocus="autofocus"
-              required
               type="text"
               name="distance[address]"
               id="distance_address"
@@ -14,7 +12,9 @@
               @input="onChange"
               @keydown.down="onArrowDown"
               @keydown.up="onArrowUp"
-              @keydown.tab.prevent="onTab">
+              @keydown.tab.prevent="onTab"
+              autofocus
+              required>
       <%= hidden_field 'distance', 'latlng' %>
       <ul v-show="isOpen" class="list-group mb-3">
         <li class="list-group-item" v-if="!isLoading">查無交流道＆服務區資料</li>
@@ -451,6 +451,7 @@
             vm.result = arr[0];
             vm.search = vm.result.name;
             $("#distance_latlng").val(vm.result.coordsN);
+            $("#distance_address").focus();
           } else {
             var arr = _arr[0].detail.filter(function(item, index, array){
               return item.km <= vm.km && item.coordsS !== "";
@@ -458,6 +459,7 @@
             vm.result = arr[arr.length-1];
             vm.search = vm.result.name;
             $("#distance_latlng").val(vm.result.coordsS);
+            $("#distance_address").focus();
           }
         } else {
           $("#freeway-alert").html("請輸入國道方向與里程");
