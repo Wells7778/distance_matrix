@@ -31,7 +31,7 @@
     </div>
     <p id="freeway-alert" class="text-danger text-center"></p>
     <hr>
-    <autocomplete :items="interChanges" @setlat="fastSetInterChange"></autocomplete>
+    <autocomplete :items="interChanges" @setlat="fastSetInterChange" @clear-input="clearInput"></autocomplete>
     <hr>
     <h3>搜尋紀錄</h3>
     <table class="table table-striped">
@@ -141,9 +141,9 @@
     v-show="isOpen"
     class="list-group">
     <li
-      class="loading"
+      class="list-group-item"
       v-if="isLoading">
-      Loading results...
+      查無資料
     </li>
     <li
       v-else
@@ -167,33 +167,23 @@
         results: [],
         isOpen: false,
         isLoading: false,
-        arrowCounter: 0
+        arrowCounter: -1
       }
     },
     props: {
       items: {
         type: Array,
         default: () => []
-      },
-      isAsync: {
-        type: Boolean,
-        default: false
       }
     },
     methods: {
       onChange() {
         if (this.search !== "") {
-          // Let's warn the parent that a change was made
           this.$emit('input', this.search);
-
-          // Is the data given by an outside ajax request?
-          if (this.isAsync) {
-            this.isLoading = true;
-          } else {
-            // Data is sync, we can search our flat array
-            this.filterResults();
-            this.isOpen = true;
-          }
+          this.filterResults();
+          this.isOpen = true;
+        } else {
+          this.isOpen = false;
         }
       },
       filterResults() {
@@ -203,8 +193,14 @@
         this.results = _items.filter(item => item.indexOf(this.search) > -1);
       },
       setResult(result) {
-        this.search = result;
-        this.isOpen = false;
+        var vm = this;
+        if (vm.results.length !== 0) {
+          vm.search = result;
+          vm.isOpen = false;
+        }
+        if (vm.results.length !== 0 && vm.search === vm.results[0]) {
+          vm.$emit('setlat', vm.search);
+        }
       },
       onArrowDown() {
         if (this.arrowCounter < this.results.length) {
@@ -217,31 +213,40 @@
         }
       },
       onEnter() {
-        this.search = this.results[this.arrowCounter];
-        this.isOpen = false;
-        this.arrowCounter = 0;
+        var vm = this;
+        if (vm.results.length !== 0) {
+          vm.search = vm.results[vm.arrowCounter];
+          vm.isOpen = false;
+          vm.arrowCounter = -1;
+        }
+        if (vm.results.length !== 0 && vm.search === vm.results[0]) {
+          vm.$emit('setlat', vm.search);
+        }
       },
       handleClickOutside(evt) {
         if (!this.$el.contains(evt.target)) {
           this.isOpen = false;
-          this.arrowCounter = 0;
+          this.arrowCounter = -1;
         }
       },
       setLatLng() {
-        if (this.search !== "") {
+        if (this.search !== "" && this.results.length != 0) {
           this.$emit('setlat', this.search);
         }
       }
     },
     watch: {
-      // Once the items content changes, it means the parent component
-      // provided the needed data
-      items: function (value, oldValue) {
-        // we want to make sure we only do this when it's an async request
-        if (this.isAsync) {
-          this.results = value;
-          this.isOpen = true;
+      results() {
+        if (this.results.length === 0) {
+          this.isLoading = true;
+        } else {
           this.isLoading = false;
+        }
+      },
+      search() {
+        var vm = this;
+        if (vm.search == "") {
+          this.$emit('clear-input');
         }
       }
     },
@@ -585,11 +590,11 @@
       setInterChange(index, direction) {
         var vm = this;
         if (direction === "N") {
-          $("#distance_address").val(vm.selectFreeway.detail[index].name);
+          $("#distance_address").val(vm.selectFreeway.detail[index].name).focus();
           $("#distance_latlng").val(vm.selectFreeway.detail[index].coordsN);
           $("#freewayModal").modal("hide");
         } else {
-          $("#distance_address").val(vm.selectFreeway.detail[index].name);
+          $("#distance_address").val(vm.selectFreeway.detail[index].name).focus();
           $("#distance_latlng").val(vm.selectFreeway.detail[index].coordsS);
           $("#freewayModal").modal("hide");
         }
@@ -599,12 +604,15 @@
         var result = vm.interChanges.find(function (item) {
           return item.name === str;
         });
-        if (result.coords === "") {
+        if (result && result.coords === "") {
           alert("該交流道無座標，請重新選擇");
         } else {
-          $("#distance_address").val(result.name);
           $("#distance_latlng").val(result.coords);
+          $("#distance_address").val(result.name).focus();
         }
+      },
+      clearInput() {
+        $("#distance_address").val("");
       }
     },
     watch: {
@@ -633,7 +641,7 @@
         var result = []
         vm.roadData.forEach(function(element) {
           element.detail.forEach(function(item) {
-            if (item.name.slice(-3,) === "服務區" || item.name.slice(-3,) === "休息站") {
+            if (item.name.slice(-3) === "服務區" || item.name.slice(-3) === "休息站") {
               result.push({ name: item.name.concat("北上"), coords: item.coordsN })
               result.push({ name: item.name.concat("南下"), coords: item.coordsS })
             } else {
