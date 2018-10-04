@@ -452,7 +452,7 @@
               return item.km >= vm.km && item.coordsN !== "";
             });
             vm.result = arr[0];
-            vm.search = vm.result.name;
+            $("#distance_address").val(vm.result.name);
             $("#distance_latlng").val(vm.result.coordsN);
             $("#distance_address").focus();
           } else {
@@ -460,7 +460,7 @@
               return item.km <= vm.km && item.coordsS !== "";
             });
             vm.result = arr[arr.length-1];
-            vm.search = vm.result.name;
+            $("#distance_address").val(vm.result.name);
             $("#distance_latlng").val(vm.result.coordsS);
             $("#distance_address").focus();
           }
