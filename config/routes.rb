@@ -10,5 +10,10 @@ Rails.application.routes.draw do
     resources :services
     root "services#index"
   end
+  namespace :api, defaults: {format: :json} do
+    namespace :v1 do
+      resources :freeways, only: [:index, :show]
+    end
+  end
   root "distances#index"
 end
