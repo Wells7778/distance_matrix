@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   namespace :api, defaults: {format: :json} do
     namespace :v1 do
       resources :freeways, only: [:index, :show]
+      resources :interchanges, only: :index
     end
   end
   root "distances#index"
