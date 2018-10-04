@@ -1,38 +1,16 @@
 <div class="row" id="app">
   <div class="col-sm-10 offset-sm-1">
     <h1>米其林服務網搜尋</h1>
-
-    <%= form_tag("/distances", method: "post", remote: true) do %>
-      <input placeholder="請輸入搜尋地址或地標，僅交流道與服務區會有自動完成提示，請用滑鼠或Tab選擇"
-              type="text"
-              name="distance[address]"
-              id="distance_address"
-              class="form-control"
-              v-model="search"
-              @input="onChange"
-              @keydown.down="onArrowDown"
-              @keydown.up="onArrowUp"
-              @keydown.tab.prevent="onTab"
-              autofocus
-              required>
-      <%= hidden_field 'distance', 'latlng' %>
-      <ul v-show="isOpen" class="list-group mb-3">
-        <li class="list-group-item" v-if="!isLoading">查無交流道＆服務區資料</li>
-        <li
-          v-else
-          v-for="(result, i) in results"
-          :key="i"
-          @click="setResult(result)"
-          class="list-group-item"
-          :class="{ 'active': i === arrowCounter }"
-          @mouseover="arrowCounter = i">
-          {{ result }}
-        </li>
-      </ul>
-      <%= submit_tag "搜尋", class: "btn btn-primary" %>
+    <%= form_for @distance , remote: true, html: { class: "form-inline row" } do |f| %>
+      <div class="form-group col-8">
+        <%= f.text_field :address, class: "form-control w-100", placeholder: "請輸入搜尋地址或地標", autofocus: true, required: true %>
+        <%= f.hidden_field :latlng %>
+      </div>
+      <div class="form-group col-4">
+        <%= f.submit "搜尋", disable_with: '搜尋中...', class: "btn btn-primary" %>
+      </div>
     <% end %>
     <hr>
-
     <h3>國道速查</h3>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -52,6 +30,31 @@
     </div>
     <p id="freeway-alert" class="text-danger text-center"></p>
     <hr>
+    <h3>交流道＆服務區速查</h3>
+    <div class="input w-75">
+      <input type="text"
+        placeholder="請輸入交流道與服務區會有自動完成提示"
+        type="text"
+        class="form-control"
+        v-model="search"
+        @input="onChange"
+        @keydown.down.prevent="onArrowDown"
+        @keydown.up.prevent="onArrowUp"
+        @keydown.enter.prevent="onEnter">
+      <ul v-show="isOpen" class="list-group mb-3">
+        <li class="list-group-item" v-if="!isLoading">查無交流道＆服務區資料</li>
+        <li
+          v-else
+          v-for="(result, i) in results"
+          :key="i"
+          @click="setResult(result)"
+          class="list-group-item"
+          :class="{ 'active': i === arrowCounter }"
+          @mouseover="arrowCounter = i">
+          {{ result }}
+        </li>
+      </ul>
+      </div>
     <hr>
     <h3>搜尋紀錄</h3>
     <table class="table table-striped">
@@ -485,21 +488,6 @@
           $("#freewayModal").modal("hide");
         }
       },
-      fastSetInterChange(str) {
-        var vm = this;
-        var result = vm.interChanges.find(function (item) {
-          return item.name === str;
-        });
-        if (result && result.coords === "") {
-          alert("該交流道無座標，請重新選擇");
-        } else {
-          $("#distance_latlng").val(result.coords);
-          $("#distance_address").val(result.name);
-        }
-      },
-      clearInput() {
-        $("#distance_address").val("");
-      },
       onChange() {
         if (this.search !== "") {
           this.$emit('input', this.search);
@@ -519,7 +507,14 @@
         var vm = this;
         if (vm.results.length !== 0) {
           vm.search = result;
+          var _result = vm.interChanges.find(function (item) {
+            return item.name === result;
+          });
+          $("#distance_address").val(_result.name);
+          $("#distance_latlng").val(_result.coords);
+          vm.arrowCounter = -1;
           vm.isOpen = false;
+          $("#distance_address").focus();
         }
       },
       handleClickOutside(evt) {
@@ -538,16 +533,18 @@
           this.arrowCounter = this.arrowCounter - 1;
         }
       },
-      onTab() {
+      onEnter() {
         var vm = this;
         if (vm.isLoading && vm.isOpen) {
           vm.search = vm.results[vm.arrowCounter];
           var result = vm.interChanges.find(function (item) {
             return item.name === vm.search;
           });
+          $("#distance_address").val(result.name);
           $("#distance_latlng").val(result.coords);
           vm.arrowCounter = -1;
           vm.isOpen = false;
+          $("#distance_address").focus();
         }
       }
     },
@@ -567,6 +564,11 @@
           vm.isLoading = false;
         } else {
           vm.isLoading = true;
+        }
+      },
+      search() {
+        if (this.search === "") {
+          $("#distance_address").val("")
         }
       }
     },
