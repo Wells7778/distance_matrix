@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181002153932) do
+ActiveRecord::Schema.define(version: 20181004072822) do
 
   create_table "distances", force: :cascade do |t|
     t.string "address"
@@ -20,6 +20,25 @@ ActiveRecord::Schema.define(version: 20181002153932) do
     t.text "geo_address"
     t.string "post_code"
     t.string "latlng"
+  end
+
+  create_table "freeways", force: :cascade do |t|
+    t.string "name"
+    t.string "direction"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "interchanges", force: :cascade do |t|
+    t.string "name"
+    t.string "cityNW"
+    t.string "citySE"
+    t.integer "km"
+    t.string "coordsNW"
+    t.string "coordsSE"
+    t.integer "freeway_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "posts", force: :cascade do |t|

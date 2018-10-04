@@ -1,0 +1,2 @@
+class Interchange < ApplicationRecord
+end
