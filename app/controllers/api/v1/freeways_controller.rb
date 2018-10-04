@@ -1,12 +1,11 @@
-class Api::V1::FreewaysController < ApplicationController
+class Api::V1::FreewaysController < ApiController
   def index
     @freeways = Freeway.all
     render json: {
       data: @freeways.map do |freeway|
         {
           id: freeway.id,
-          name: freeway.name,
-          direction: freeway.direction
+          name: freeway.name
         }
       end
     }
