@@ -588,7 +588,7 @@
             if (item.name.slice(-3) === "服務區" || item.name.slice(-3) === "休息站") {
               result.push({ name: item.name.concat("北上"), coords: item.coordsN })
               result.push({ name: item.name.concat("南下"), coords: item.coordsS })
-            } else {
+            } else if (item.coordsN !== "" || item.coordsS !== "") {
               result.push({ name: item.name, coords: item.coordsN })
             }
           });
