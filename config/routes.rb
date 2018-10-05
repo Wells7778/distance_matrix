@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   end
   namespace :admin do
     resources :services
+    resources :interchanges
     root "services#index"
   end
   namespace :api, defaults: {format: :json} do

@@ -1,0 +1,43 @@
+<div class="row">
+  <ul class="nav nav-tabs m-auto align-items-center">
+    <% @freeways.each do |freeway| %>
+      <li class="nav-item">
+        <% if freeway.id == @id %>
+          <%= link_to freeway.name, admin_interchanges_path(freeway_id: freeway.id), class: "nav-link active" %>
+        <% else %>
+          <%= link_to freeway.name, admin_interchanges_path(freeway_id: freeway.id), class: "nav-link" %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+  <div class="col-sm-10 offset-sm-1">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>名稱</th>
+          <th>Km</th>
+          <th>北上預告出口</th>
+          <th>南下預告出口</th>
+          <th>北上交流道座標</th>
+          <th>南下交流道座標</th>
+          <th>#</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @interchanges && @interchanges.each do |i| %>
+          <tr>
+            <td><%= i.name %></td>
+            <td><%= i.km %></td>
+            <td><%= i.cityNW %></td>
+            <td><%= i.citySE %></td>
+            <td><%= i.coordsNW %></td>
+            <td><%= i.coordsSE %></td>
+            <td>
+
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
