@@ -15,15 +15,21 @@ class DistancesController < ApplicationController
     else
       @lists = tmp_lists
     end
-    @img_url = "//maps.googleapis.com/maps/api/staticmap?center=#{@distance.geo_address}&size=600x300&zoom=15&language=zh-TW&key=#{$settings['secret']}"
+    @img_url = "//maps.googleapis.com/maps/api/staticmap?center=#{@distance.latlng}&size=600x300&zoom=15&language=zh-TW&key=#{$settings['secret']}"
   end
 
   def create
     @distance = Distance.new(dis_params)
     @address = dis_params[:address]
     @latlng = dis_params[:latlng]
-    @geo_address = dis_params[:latlng].blank? ? Distance.geocode(dis_params[:address]) : Distance.geocode(dis_params[:latlng])
-    @img_url = "//maps.googleapis.com/maps/api/staticmap?center=#{@geo_address}&size=600x300&zoom=15&language=zh-TW&key=#{$settings['secret']}"
+    if @latlng.blank?
+      result = Distance.geocode(dis_params[:address])
+      @geo_address = result[:geo_address]
+      @latlng = result[:latlng]
+    else
+      @geo_address = Distance.geocode(dis_params[:latlng])[:geo_address]
+    end
+    @img_url = "//maps.googleapis.com/maps/api/staticmap?center=#{@latlng}&size=600x300&zoom=15&language=zh-TW&key=#{$settings['secret']}"
     if @geo_address.nil?
       flash[:alert] = "GOOGLE搜尋不到，請用鄉鎮區域搜尋"
       redirect_to root_path

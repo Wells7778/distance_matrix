@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: services
+#
+#  id           :integer          not null, primary key
+#  tag          :string
+#  no           :string
+#  name         :string
+#  lng          :string
+#  lat          :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  post_code    :integer
+#  service_time :string           default("00:00 ~ 00:00")
+#
+
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 # This model initially had no columns defined. If you add columns to the

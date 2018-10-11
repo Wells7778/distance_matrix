@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: distances
+#
+#  id           :integer          not null, primary key
+#  address      :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  respond_list :text
+#  geo_address  :text
+#  post_code    :string
+#  latlng       :string
+#
+
 class Distance < ApplicationRecord
   serialize :respond_list
 
@@ -5,16 +19,18 @@ class Distance < ApplicationRecord
     url = 'https://maps.googleapis.com/maps/api/geocode/json?'
     key = $settings['secret']
     if address.include?(",")
-      params = {latlng: address, language: 'zh-TW', key: key }
+      params = { latlng: address, language: 'zh-TW', key: key }
     else
-      params = {address: address, language: 'zh-TW', key: key }
+      params = { address: address, language: 'zh-TW', key: key }
     end
     url = url + params.to_query
     json_rep = RestClient.get url
     #, {params: {address: address, language: 'zh-TW', key: key }} =>因放上heroku查詢字串有問題改用拼url方式測試
     respond = JSON.parse(json_rep)
     if respond['status'] == 'OK'
-      return respond['results'][0]['formatted_address']
+      geo_address = respond['results'][0]['formatted_address']
+      latlng = [ respond['results'][0]['geometry']['location']['lat'], respond['results'][0]['geometry']['location']['lng'] ].join(",")
+      return { geo_address: geo_address, latlng: latlng }
     else
       return nil
     end
@@ -43,7 +59,7 @@ class Distance < ApplicationRecord
     end
     i = 0
     while dest.size > 0
-      json_rep = RestClient.get url, {params: {origins: self.geo_address, destinations: dest.slice!(0,25).join("|") , language: 'zh-TW', key: key }}
+      json_rep = RestClient.get url, {params: {origins: self.latlng, destinations: dest.slice!(0,25).join("|") , language: 'zh-TW', key: key }}
       respond = JSON.parse(json_rep)
       rep_array = respond['rows'][0]['elements']
       rep_array.each_with_index do |rep, index|
