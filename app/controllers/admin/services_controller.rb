@@ -8,7 +8,7 @@ class Admin::ServicesController < Admin::BaseController
 
   def create
     @service = Service.new(service_params)
-    @service.post_code = service_params[:no][0]
+    @service.post_code = service_params[:no][0..1]
     @service.save
     redirect_to admin_root_path
   end
@@ -26,7 +26,7 @@ class Admin::ServicesController < Admin::BaseController
   private
 
   def service_params
-    params.require(:service).permit(:tag, :no, :name, :lat, :lng, :post_code)
+    params.require(:service).permit(:tag, :no, :name, :lat, :lng, :post_code, :service_time)
   end
 
   def form_params
