@@ -30,7 +30,7 @@ class Admin::ServicesController < Admin::BaseController
   end
 
   def form_params
-    params.permit(:tag, :no, :name, :lat, :lng, :post_code)
+    params.permit(:tag, :no, :name, :lat, :lng, :post_code, :service_time)
   end
 
   def set_service
