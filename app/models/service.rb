@@ -15,4 +15,6 @@
 #
 
 class Service < ApplicationRecord
+  has_many :results
+  has_many :distances, through: :results
 end

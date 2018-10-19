@@ -13,6 +13,8 @@
 #
 
 class Distance < ApplicationRecord
+  has_many :results
+  has_many :services, through: :results
   serialize :respond_list
 
   def self.geocode(address)
