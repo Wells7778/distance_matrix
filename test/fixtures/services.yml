@@ -12,6 +12,7 @@
 #  updated_at   :datetime         not null
 #  post_code    :integer
 #  service_time :string           default("00:00 ~ 00:00")
+#  priority     :integer          default(0), not null
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

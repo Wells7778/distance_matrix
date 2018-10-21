@@ -10,17 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181019141333) do
-
-  create_table "distances", force: :cascade do |t|
-    t.string "address"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.text "respond_list"
-    t.text "geo_address"
-    t.string "post_code"
-    t.string "latlng"
-  end
+ActiveRecord::Schema.define(version: 20181021132836) do
 
   create_table "freeways", force: :cascade do |t|
     t.string "name"
@@ -41,6 +31,16 @@ ActiveRecord::Schema.define(version: 20181019141333) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "lists", force: :cascade do |t|
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "respond_list"
+    t.text "geo_address"
+    t.string "post_code"
+    t.string "latlng"
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string "code"
     t.string "name"
@@ -50,10 +50,11 @@ ActiveRecord::Schema.define(version: 20181019141333) do
 
   create_table "results", force: :cascade do |t|
     t.integer "service_id"
-    t.integer "distance_id"
-    t.text "responds"
+    t.integer "list_id"
+    t.integer "distance"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status"
   end
 
   create_table "services", force: :cascade do |t|
@@ -66,6 +67,7 @@ ActiveRecord::Schema.define(version: 20181019141333) do
     t.datetime "updated_at", null: false
     t.integer "post_code"
     t.string "service_time", default: "00:00 ~ 00:00"
+    t.integer "priority", default: 0, null: false
   end
 
   create_table "users", force: :cascade do |t|

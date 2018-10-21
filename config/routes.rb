@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  resources :distances, only: [:index, :create, :show] do
+  resources :lists, only: [:index, :create, :show] do
     collection do
       post :cal_distance
     end
@@ -17,5 +17,5 @@ Rails.application.routes.draw do
       resources :interchanges, only: :index
     end
   end
-  root "distances#index"
+  root "lists#index"
 end

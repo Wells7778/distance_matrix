@@ -1,0 +1,11 @@
+<%= form_for list, url: cal_distance_lists_path, html: { class: "modal-form" } do |f| %>
+  <div class="form-group">
+    <%= f.hidden_field :address %>
+    <%= f.hidden_field :geo_address %>
+    <%= f.hidden_field :post_code %>
+    <%= f.hidden_field :latlng %>
+  </div>
+  <div class="form-group">
+    <%= f.submit "開始搜尋服務網", class: "btn btn-primary" %>
+  </div>
+<% end %>

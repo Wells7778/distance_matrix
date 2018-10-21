@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="col-sm-7">
+    <h1 class="text-danger">搜尋地點： <%= @list.address %></h1>
+    <h3 class="text-muted">ＧＯＯＧＬＥ地點： <%= @list.geo_address %></h3>
+    <%= link_to "回搜尋", root_path, class: "btn btn-primary my-2" %>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>註記</th>
+          <th>編號</th>
+          <th>服務網名字</th>
+          <th>營業時間</th>
+          <th>路徑距離</th>
+          <th>..</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @lists.each do |service| %>
+          <tr class="item">
+            <% if service.tag == "優" %>
+              <% text = "text-danger" %>
+            <% elsif service.tag == "無" %>
+              <% text = "text-info" %>
+            <% else %>
+              <% text = "text-muted" %>
+            <% end %>
+              <td class="<%= text %>"><%= service.tag %></td>
+              <td class="<%= text %>" id="id-<%= service.no %>"><%= service.no %></td>
+              <td class="<%= text %>"><%= service.name %></td>
+              <td class="<%= text %>"><%= service.service_time %></td>
+              <td class="<%= text %>"><%= service.results.find_by(list_id: @list.id).distance / 1000 %>公里</td>
+              <td>
+                <button type="button" class="copy btn btn-sm btn-outline-success" data-clipboard-target="#id-<%= service.no %>">複製</button>
+              </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-sm-5">
+    <h3 class="mt-5 text-muted">地圖僅供參考</h3>
+    <img border="1" src="<%= @img_url %>" alt="" class="mt-1">
+  </div>
+</div>
+<script>
+  new Clipboard( ".copy" );
+</script>
