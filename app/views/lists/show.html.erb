@@ -16,22 +16,22 @@
         </tr>
       </thead>
       <tbody>
-        <% @lists.each do |service| %>
+        <% @lists.each do |list| %>
           <tr class="item">
-            <% if service.tag == "優" %>
+            <% if list.service.tag == "優" %>
               <% text = "text-danger" %>
-            <% elsif service.tag == "無" %>
+            <% elsif list.service.tag == "無" %>
               <% text = "text-info" %>
             <% else %>
               <% text = "text-muted" %>
             <% end %>
-              <td class="<%= text %>"><%= service.tag %></td>
-              <td class="<%= text %>" id="id-<%= service.no %>"><%= service.no %></td>
-              <td class="<%= text %>"><%= service.name %></td>
-              <td class="<%= text %>"><%= service.service_time %></td>
-              <td class="<%= text %>"><%= service.results.find_by(list_id: @list.id).distance / 1000 %>公里</td>
+              <td class="<%= text %>"><%= list.service.tag %></td>
+              <td class="<%= text %>" id="id-<%= list.service.no %>"><%= list.service.no %></td>
+              <td class="<%= text %>"><%= list.service.name %></td>
+              <td class="<%= text %>"><%= list.service.service_time %></td>
+              <td class="<%= text %>"><%= list.distance / 1000 %>公里</td>
               <td>
-                <button type="button" class="copy btn btn-sm btn-outline-success" data-clipboard-target="#id-<%= service.no %>">複製</button>
+                <button type="button" class="copy btn btn-sm btn-outline-success" data-clipboard-target="#id-<%= list.service.no %>">複製</button>
               </td>
           </tr>
         <% end %>

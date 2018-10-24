@@ -6,21 +6,15 @@ class ListsController < ApplicationController
 
   def show
     @list = List.find_by(id: params[:id])
-    # 33801 文鹿 31001 竹東東昇 43504 梧棲有勝 81202 小港和義 82002 岡山和義
-    tmp_lists = @list.services.includes(:results).order("results.distance asc")
-    priority_lists = @list.services.where("priority > 0").includes(:results).where( "results.distance <= ?", 25999 )
-    if priority_lists.exists?
-      tmp_lists -= priority_lists
-      @lists = priority_lists + tmp_lists
-    else
-      @lists = tmp_lists
-    end
+    priority_lists = @list.results.priority
+    tmp_lists = @list.results.includes(:service).order("distance asc")
+    @lists = (priority_lists | tmp_lists).uniq
     @img_url = "//maps.googleapis.com/maps/api/staticmap?center=#{@list.latlng}&size=600x300&zoom=15&language=zh-TW&key=#{$settings['secret']}"
   end
 
   def create
     @list = List.new(list_params)
-    result = Search.geocode(list_params[:address])
+    result = list_params[:latlng].blank? ? Search.geocode(list_params[:address]) : Search.geocode(list_params[:latlng])
     if result.nil?
       flash[:alert] = "GOOGLE搜尋不到，請用鄉鎮區域搜尋"
       redirect_to root_path

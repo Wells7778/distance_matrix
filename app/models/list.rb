@@ -13,14 +13,19 @@
 #
 
 class List < ApplicationRecord
-  has_many :results
+  has_many :results do
+    def priority
+      where("distance < ?", 25999).where("priority > ?", 0)
+    end
+  end
   has_many :services, through: :results
 
   after_create :update_results
   private
   def update_results
     Search.get_distance(self.latlng, self.post_code).each do |res|
-      self.results.create(service_id: res[:id], distance: res[:distance], status: res[:status])
+      priority = Service.find_by(id: res[:id]).priority
+      self.results.create(service_id: res[:id], distance: res[:distance], status: res[:status], priority: priority)
     end
   end
 end

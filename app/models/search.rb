@@ -30,7 +30,7 @@ class Search < ApplicationRecord
     elsif current_code > 25 and current_code < 28
       origins = Service.where(post_code: [start_code..end_code]).or(Service.where(post_code: [95..98])).select(:id, :lat, :lng)
     elsif current_code == 0
-      origins = Service.select(:id)
+      origins = Service.select(:id, :lat, :lng)
     else
       origins = Service.where(post_code: [start_code..end_code]).select(:id, :lat, :lng)
     end
