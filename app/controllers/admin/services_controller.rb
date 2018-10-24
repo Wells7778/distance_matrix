@@ -26,11 +26,11 @@ class Admin::ServicesController < Admin::BaseController
   private
 
   def service_params
-    params.require(:service).permit(:tag, :no, :name, :lat, :lng, :post_code, :service_time)
+    params.require(:service).permit(:tag, :no, :name, :lat, :lng, :post_code, :service_time, :priority)
   end
 
   def form_params
-    params.permit(:tag, :no, :name, :lat, :lng, :post_code, :service_time)
+    params.permit(:tag, :no, :name, :lat, :lng, :post_code, :service_time, :priority)
   end
 
   def set_service
