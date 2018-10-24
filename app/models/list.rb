@@ -25,7 +25,7 @@ class List < ApplicationRecord
   def update_results
     Search.get_distance(self.latlng, self.post_code).each do |res|
       priority = Service.find_by(id: res[:id]).priority
-      self.results.create(service_id: res[:id], distance: res[:distance], status: res[:status], priority: priority)
+      self.results.create(service_id: res[:id], distance: res[:distance].to_i, status: res[:status], priority: priority)
     end
   end
 end
