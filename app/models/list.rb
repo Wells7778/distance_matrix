@@ -15,7 +15,7 @@
 class List < ApplicationRecord
   has_many :results do
     def priority
-      where("distance < ?", 25999).where("priority > ?", 0)
+      where("distance < ?", 25999).where("priority > ?", 0).order(distance: :asc)
     end
   end
   has_many :services, through: :results
