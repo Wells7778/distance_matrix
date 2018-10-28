@@ -64,3 +64,5 @@ gem 'ransack'
 gem 'kaminari'
 gem 'figaro'
 gem 'devise'
+
+gem 'google-api-client'
