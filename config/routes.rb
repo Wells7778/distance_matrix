@@ -7,7 +7,11 @@ Rails.application.routes.draw do
     end
   end
   namespace :admin do
-    resources :services
+    resources :services do
+      collection do
+        post :import
+      end
+    end
     resources :interchanges
     root "services#index"
   end
