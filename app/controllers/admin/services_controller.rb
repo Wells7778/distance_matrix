@@ -49,6 +49,11 @@ class Admin::ServicesController < Admin::BaseController
     end
   end
 
+  def export
+    @services = Service.all
+    render "export.xlsx.axlsx"
+  end
+
 
   private
 
