@@ -16,5 +16,10 @@
         <%= link_to "交流道清單", admin_interchanges_path, class: "nav-link active" %>
       <% end %>
     </li>
+    <li class="nav-item">
+      <%= link_to_unless_current "派車注意事項", admin_notes_path, class: "nav-link" do %>
+        <%= link_to "派車注意事項", admin_notes_path, class: "nav-link active" %>
+      <% end %>
+    </li>
   </ul>
 </div>

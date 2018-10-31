@@ -1,0 +1,38 @@
+<%= render partial: "admin/shared/navtab" %>
+  <div class="row">
+    <%= form_for [:admin, @note], html: { class: "mb-3 w-100" } do |f| %>
+      <div class="row">
+        <div class="form-group mr-3 col-8">
+          <%= f.text_field :content, placeholder: "派車注意事項", class: "form-control" %>
+        </div>
+        <div class="form-group col">
+          <%= f.submit class: "btn btn-primary" %>
+          <% if @note.errors.any? %>
+            <%= @note.errors.full_messages.to_sentence %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+    <table class="table table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th>項次</th>
+          <th style="width: 70%;">注意事項</th>
+          <th>#</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @notes.each_with_index do |note, index| %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= note.content %></td>
+            <td>
+              <%= link_to "編輯", admin_notes_path(id: note.id), class: "btn btn-primary" %>
+              <%= link_to "刪除", admin_note_path(note), method: :delete, data: { confirm: "Are you sure??" }, class: "btn btn-primary" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
