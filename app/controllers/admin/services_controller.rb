@@ -50,7 +50,7 @@ class Admin::ServicesController < Admin::BaseController
   end
 
   def export
-    @services = Service.all
+    @services = Service.all.order(no: :asc)
     render "export.xlsx.axlsx"
   end
 

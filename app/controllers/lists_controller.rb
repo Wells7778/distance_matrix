@@ -6,9 +6,16 @@ class ListsController < ApplicationController
 
   def show
     @list = List.find_by(id: params[:id])
+    # 設定宜蘭與麥寮優先派遣固定服務點
+    if @list.geo_address[0..2] == "638"
+      first_service = Service.find_by(no: "63803").results.find_by(list_id: @list.id)
+    elsif @list.post_code == "26" || @list.post_code == "27"
+      first_service = Service.find_by(no: "27001").results.find_by(list_id: @list.id)
+    end
     priority_lists = @list.results.priority
     tmp_lists = @list.results.includes(:service).order("distance asc")
     @lists = (priority_lists | tmp_lists).uniq
+    @lists.insert(0,first_service).uniq!
     @img_url = "//maps.googleapis.com/maps/api/staticmap?center=#{@list.latlng}&size=600x300&zoom=15&language=zh-TW&key=#{$settings['secret']}"
   end
 
