@@ -2,6 +2,7 @@ class ListsController < ApplicationController
   def index
     @list = List.new
     @lists = List.all.order(created_at: :desc).page(params[:page]).per(20)
+    @notes = Note.all.select(:content)
   end
 
   def show

@@ -6,3 +6,11 @@ input#distance_address,
 input.interchange {
   border-width: 3px;
 }
+
+#note-button {
+  position: fixed;
+  right: 100px;
+  top: 100px;
+  border-radius: 20px;
+  box-shadow: 4px 4px 3px rgba(20%, 20%, 40%, 0.5);
+}
