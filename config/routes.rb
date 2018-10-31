@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       end
     end
     resources :interchanges
+    resources :notes
     root "services#index"
   end
   namespace :api, defaults: {format: :json} do
