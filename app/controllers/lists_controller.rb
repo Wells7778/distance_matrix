@@ -13,7 +13,7 @@ class ListsController < ApplicationController
     elsif @list.post_code == "26" || @list.post_code == "27"
       first_service = Service.find_by(no: "27001").results.find_by(list_id: @list.id)
     end
-    priority_lists = @list.results.priority
+    priority_lists = @list.results.priority_service
     tmp_lists = @list.results.includes(:service).order("distance asc")
     @lists = (priority_lists | tmp_lists).uniq
     @lists.insert(0,first_service).uniq! if first_service
