@@ -2,7 +2,12 @@ class Admin::NotesController < ApplicationController
   before_action :set_note, only: [:update, :destroy]
   def index
     @notes = Note.all
-    @note = Note.new
+    if params[:id]
+      set_note
+    else
+      @note = Note.new
+    end
+
   end
 
   def create
