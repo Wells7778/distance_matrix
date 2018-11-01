@@ -30,6 +30,7 @@
         <th>緯度</th>
         <th>經度</th>
         <th><%= sort_link(@ransack, :priority, "優先度", default_order: :desc) %></th>
+        <th><%= sort_link(@ransack, :status, "是否啟用", default_order: :desc) %></th>
         <th>#</th>
       </tr>
     </thead>
@@ -43,113 +44,20 @@
           <td><%= service.lng %></td>
           <td><%= service.lat %></td>
           <td><%= service.priority %></td>
+          <td><%= service.status %></td>
           <td>
-            <%= button_tag "編輯", type: "button", data: { toggle: "modal", target: "#Modal-#{service.id}" }, class: "btn btn-primary" %>
+            <%= link_to "編輯", edit_admin_service_path(service), remote: true, class: "btn btn-primary" %>
             <%= link_to "刪除", admin_service_path(service), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-primary" %>
           </td>
         </tr>
-        <div class="modal fade" id=<%= "Modal-#{service.id}" %> tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">修改服務網</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <%= form_tag admin_service_path(service), method: :patch, class: "form" do %>
-                  <div class="form-group">
-                    <%= label_tag :tag, "註記" %>
-                    <%= select_tag :tag, options_for_select(['優','無','劣'], service.tag), class: "form-control" %>
-                  </div>
-                  <div class="form-group">
-                    <%= label_tag :no, "代號" %>
-                    <%= text_field_tag :no, service.no , class: "form-control" %>
-                  </div>
-                  <div class="form-group">
-                    <%= label_tag :name, "Name" %>
-                    <%= text_field_tag :name, service.name, class: "form-control" %>
-                  </div>
-                  <div class="form-group">
-                    <%= label_tag :service_time, "營業時間" %>
-                    <%= text_field_tag :service_time, service.service_time, class: "form-control" %>
-                  </div>
-                  <div class="form-group">
-                    <%= label_tag :lng, "緯度" %>
-                    <%= text_field_tag :lng, service.lng, class: "form-control" %>
-                  </div>
-                  <div class="form-group">
-                    <%= label_tag :lat, "經度" %>
-                    <%= text_field_tag :lat, service.lat, class: "form-control" %>
-                  </div>
-                  <div class="form-group">
-                    <%= label_tag :priority, "優先度，大於0則25K內優先派" %>
-                    <%= number_field_tag :priority, service.priority, class: "form-control" %>
-                  </div>
-                  <%= submit_tag "更新", class: "btn btn-primary" %>
-                <% end -%>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
       <% end %>
     </tbody>
   </table>
   <div class="m-auto">
     <%= paginate @services %>
   </div>
-  <div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">新增服務網</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <%= form_for [:admin, @service] do |f| %>
-            <div class="form-group">
-              <%= f.label :tag, "註記" %>
-              <%= f.select :tag, ['優','無','劣'], class: "form-control" %>
-            </div>
-            <div class="form-group">
-              <%= f.label :no, "代號" %>
-              <%= f.text_field :no, class: "form-control" %>
-            </div>
-            <div class="form-group">
-              <%= f.label :name, "Name" %>
-              <%= f.text_field :name, class: "form-control" %>
-            </div>
-            <div class="form-group">
-              <%= f.label :service_time, "營業時間" %>
-              <%= f.text_field :service_time, class: "form-control" %>
-            </div>
-            <div class="form-group">
-              <%= f.label :lng, "緯度" %>
-              <%= f.text_field :lng, class: "form-control" %>
-            </div>
-            <div class="form-group">
-              <%= f.label :lat, "經度" %>
-              <%= f.text_field :lat, class: "form-control" %>
-            </div>
-            <div class="form-group">
-              <%= f.label :priority, "優先度，大於0則25K內優先派" %>
-              <%= f.number_field :priority, class: "form-control" %>
-            </div>
-            <%= f.submit "新增", class: "btn btn-primary" %>
-          <% end %>
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
+  <div class="modal-box">
+    <%= render partial: "modal", locals: { service: @service, title: "新增服務網", html_id: "newModal" } %>
   </div>
   <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

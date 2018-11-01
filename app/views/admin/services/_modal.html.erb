@@ -1,0 +1,52 @@
+<div class="modal fade" id="<%= html_id %>" tabindex="-1" role="dialog" aria-labelledby="newModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><%= title %></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <%= form_for [:admin, service] do |f| %>
+            <div class="form-group">
+              <%= f.label :tag, "註記" %>
+              <%= f.select :tag, ['優','無','劣'], class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :no, "代號" %>
+              <%= f.text_field :no, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :name, "Name" %>
+              <%= f.text_field :name, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :service_time, "營業時間" %>
+              <%= f.text_field :service_time, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :lng, "緯度" %>
+              <%= f.text_field :lng, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :lat, "經度" %>
+              <%= f.text_field :lat, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :priority, "優先度，大於0則25K內優先派" %>
+              <%= f.number_field :priority, class: "form-control" %>
+            </div>
+            <div class="form-group mb-3">
+              <%= f.label :status, "是否啟用" %>
+              <%= f.select :status, [true, false], class: "form-check-input" %>
+            </div>
+            <%= f.submit "送出", class: "btn btn-primary" %>
+          <% end %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,8 +1,8 @@
 wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "services") do |sheet|
-  sheet.add_row %w(派遣順位 代號 名稱 緯度 經度 郵遞區號前二碼 營業時間 優先度)
+  sheet.add_row %w(派遣順位 代號 名稱 緯度 經度 郵遞區號前二碼 營業時間 優先度 是否啟用)
   @services.each do |service|
-    sheet.add_row [service.tag, service.no, service.name, service.lng, service.lat, service.post_code, service.service_time, service.priority]
+    sheet.add_row [service.tag, service.no, service.name, service.lng, service.lat, service.post_code, service.service_time, service.priority, service.status]
   end
 end

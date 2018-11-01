@@ -39,7 +39,7 @@ class GoogleSheet
     service.client_options.application_name = APPLICATION_NAME
     service.authorization = GoogleSheet.authorize
 
-    response = service.get_spreadsheet_values("1oU-8DlwEgO1UiP-vGaRnp4lkMaXy8auFF-qR95XrbJw", "services!A1:H1000")
+    response = service.get_spreadsheet_values("1oU-8DlwEgO1UiP-vGaRnp4lkMaXy8auFF-qR95XrbJw", "services!A1:I1000")
     result = []
     if response.values.empty?
       result << { status: "EMPTY"}
@@ -54,7 +54,8 @@ class GoogleSheet
                       lng: row[4],
                       post_code: row[5],
                       service_time: row[6],
-                      priority: row[7]
+                      priority: row[7],
+                      status: row[8]
                     }
         end
       end

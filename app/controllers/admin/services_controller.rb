@@ -1,5 +1,5 @@
 class Admin::ServicesController < Admin::BaseController
-  before_action :set_service, only: [:update, :destroy]
+  before_action :set_service, only: [:edit, :update, :destroy]
   def index
     @ransack = Service.order("no asc").ransack(ransack_params)
     @services = @ransack.result(distinct: true).page(params[:page]).per(20)
@@ -14,7 +14,7 @@ class Admin::ServicesController < Admin::BaseController
   end
 
   def update
-    @service.update(form_params)
+    @service.update(service_params)
     redirect_to admin_root_path
   end
 
@@ -24,8 +24,8 @@ class Admin::ServicesController < Admin::BaseController
   end
 
   def import
-    services = GoogleSheet.get_sheet_array_from_google_sheet
-    services.each do |service|
+    GoogleSheet.get_sheet_array_from_google_sheet.each do |service|
+      status = service[:status] == "T" ? true : false
       if Service.find_by(no: service[:no]).nil?
         Service.create(
           no: service[:no],
@@ -35,7 +35,8 @@ class Admin::ServicesController < Admin::BaseController
           lng: service[:lat],
           post_code: service[:post_code],
           service_time: service[:service_time],
-          priority: service[:priority])
+          priority: service[:priority],
+          status: status )
       else
         Service.find_by(no: service[:no]).update(
           tag: service[:tag],
@@ -44,7 +45,8 @@ class Admin::ServicesController < Admin::BaseController
           lng: service[:lat],
           post_code: service[:post_code],
           service_time: service[:service_time],
-          priority: service[:priority])
+          priority: service[:priority],
+          status: status )
       end
     end
   end
@@ -58,11 +60,7 @@ class Admin::ServicesController < Admin::BaseController
   private
 
   def service_params
-    params.require(:service).permit(:tag, :no, :name, :lat, :lng, :post_code, :service_time, :priority)
-  end
-
-  def form_params
-    params.permit(:tag, :no, :name, :lat, :lng, :post_code, :service_time, :priority)
+    params.require(:service).permit(:tag, :no, :name, :lat, :lng, :post_code, :service_time, :priority, :status)
   end
 
   def set_service
