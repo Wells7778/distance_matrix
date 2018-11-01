@@ -26,13 +26,13 @@ class Search < ApplicationRecord
     start_code = (( current_code / 10 ) - 1 ) * 10
     end_code = ((( current_code / 10 ) + 1 ) * 10) + 9
     if current_code > 94
-      origins = Service.where(post_code: [start_code..end_code]).or(Service.where(post_code: [26..27])).select(:id, :lat, :lng)
+      origins = Service.active.where(post_code: [start_code..end_code]).or(Service.active.where(post_code: [26..27])).select(:id, :lat, :lng)
     elsif current_code > 25 and current_code < 28
-      origins = Service.where(post_code: [start_code..end_code]).or(Service.where(post_code: [95..98])).select(:id, :lat, :lng)
+      origins = Service.active.where(post_code: [start_code..end_code]).or(Service.active.where(post_code: [95..98])).select(:id, :lat, :lng)
     elsif current_code == 0
-      origins = Service.select(:id, :lat, :lng)
+      origins = Service.active.select(:id, :lat, :lng)
     else
-      origins = Service.where(post_code: [start_code..end_code]).select(:id, :lat, :lng)
+      origins = Service.active.where(post_code: [start_code..end_code]).select(:id, :lat, :lng)
     end
     origin_lists = origins.pluck(:lng, :lat).map { |item| item.join(",")}
 

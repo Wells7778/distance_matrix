@@ -18,4 +18,6 @@
 class Service < ApplicationRecord
   has_many :results
   has_many :lists, through: :results
+
+  scope :active, -> { where(:status => true)}
 end
