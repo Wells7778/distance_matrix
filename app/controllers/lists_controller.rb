@@ -16,7 +16,7 @@ class ListsController < ApplicationController
     priority_lists = @list.results.priority
     tmp_lists = @list.results.includes(:service).order("distance asc")
     @lists = (priority_lists | tmp_lists).uniq
-    @lists.insert(0,first_service).uniq!
+    @lists.insert(0,first_service).uniq! if first_service
     @img_url = "//maps.googleapis.com/maps/api/staticmap?center=#{@list.latlng}&size=600x300&zoom=15&language=zh-TW&key=#{$settings['secret']}"
   end
 
