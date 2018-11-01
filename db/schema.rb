@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181031134017) do
+ActiveRecord::Schema.define(version: 20181101125446) do
 
   create_table "freeways", force: :cascade do |t|
     t.string "name"
@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(version: 20181031134017) do
     t.integer "post_code"
     t.string "service_time", default: "00:00 ~ 00:00"
     t.integer "priority", default: 0, null: false
+    t.boolean "status", default: true, null: false
   end
 
   create_table "users", force: :cascade do |t|
