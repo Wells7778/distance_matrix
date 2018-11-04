@@ -1,0 +1,45 @@
+<div class="modal fade" id="<%= html_id %>" tabindex="-1" role="dialog" aria-labelledby="<%= html_id %>Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><%= title %></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <%= form_for [:admin, interchange] do |f| %>
+            <%= f.hidden_field :freeway_id, value: freeway.id if freeway %>
+            <div class="form-group">
+              <%= f.label :name, "交流道名稱" %>
+              <%= f.text_field :name, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :cityNW, "北上／西向出口預告" %>
+              <%= f.text_field :cityNW, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :citySE, "南下／東向出口預告" %>
+              <%= f.text_field :citySE, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :km, "公里數" %>
+              <%= f.number_field :km, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :coordsNW, "北上／西向出口座標" %>
+              <%= f.text_field :coordsNW, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= f.label :coordsSE, "南下／東向出口座標" %>
+              <%= f.text_field :coordsSE, class: "form-control" %>
+            </div>
+            <%= f.submit "送出", class: "btn btn-primary" %>
+          <% end %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>

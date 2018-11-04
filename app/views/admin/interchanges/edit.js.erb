@@ -1,0 +1,3 @@
+var form = "<%= j render partial: "modal", locals: { interchange: @interchange, freeway: @freeway, title: "編輯交流道", html_id: "editModal" } %>"
+$(".modal-box").append(form)
+$("#editModal").modal("show")
