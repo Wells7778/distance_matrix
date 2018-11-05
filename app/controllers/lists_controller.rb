@@ -13,7 +13,7 @@ class ListsController < ApplicationController
     elsif @list.post_code == "26" || @list.post_code == "27"
       first_service = Service.find_by(no: "27001").results.find_by(list_id: @list.id)
     end
-    @lists = ( @list.results.priority_service | @list.results.includes(:service).order(priority: :desc).order("distance asc")).uniq
+    @lists = ( @list.results.priority_service | @list.results.includes(:service).order("distance asc")).uniq
     @lists.insert(0,first_service).uniq! if first_service
     @img_url = "//maps.googleapis.com/maps/api/staticmap?center=#{@list.latlng}&size=600x300&zoom=15&language=zh-TW&key=#{$settings['secret']}"
   end
