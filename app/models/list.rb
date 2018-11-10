@@ -13,7 +13,7 @@
 #
 
 class List < ApplicationRecord
-  has_many :results do
+  has_many :results, dependent: :destroy do
     def priority_service
       where("distance < ?", 25999).where("priority > ?", 0).order(priority: :desc).order(distance: :asc)
     end
