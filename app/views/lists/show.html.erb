@@ -3,7 +3,7 @@
     <h1 class="text-danger">搜尋地點： <%= @list.address %></h1>
     <h3 class="text-muted">ＧＯＯＧＬＥ地點： <%= @list.geo_address %></h3>
     <%= link_to "回搜尋", root_path, class: "btn btn-primary my-2" %>
-
+    <button type="button" class="btn btn-info disable-line-through">取消刪除線</button>
     <table class="table table-striped">
       <thead>
         <tr>
@@ -27,7 +27,7 @@
             <% end %>
               <td class="<%= text %>"><%= list.service.tag %></td>
               <td class="<%= text %>" id="id-<%= list.service.no %>"><%= list.service.no %></td>
-              <td class="<%= text %>"><%= list.service.name %></td>
+              <td class="<%= text %> text-name"><%= list.service.name %></td>
               <td class="<%= text %>"><%= list.service.service_time %></td>
               <td class="<%= text %>"><%= list.distance / 1000 %>公里</td>
               <td>
@@ -44,5 +44,5 @@
   </div>
 </div>
 <script>
-  new Clipboard( ".copy" );
+
 </script>
