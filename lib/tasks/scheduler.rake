@@ -1,7 +1,7 @@
 desc "This task is called by the Heroku scheduler add-on"
 task :update_feed => :environment do
   puts "Updating feed..."
-  List.where("created_at < ?", Time.now - 90*24*60*60 ).destroy_all
+  List.where("created_at < ?", Time.now - 15*24*60*60 ).destroy_all
   puts "done."
 end
 
