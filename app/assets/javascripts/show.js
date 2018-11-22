@@ -4,7 +4,7 @@ $(document).on('turbolinks:load', function() {
     $('.copy').on('click', function(e) {
       var tr = e.target.parentNode.parentNode
       var serviceName = $(tr).find('.text-name')
-      $(serviceName).addClass('text-line-through bg-dark')
+      $(serviceName).toggleClass('text-line-through bg-dark')
     })
     $('.disable-line-through').on('click', function(e) {
       $('.text-line-through').removeClass('text-line-through bg-dark')
