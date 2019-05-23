@@ -23,4 +23,5 @@
 .byebug_history
 # Ignore application configuration
 /config/application.yml
-/config/credentials.json
+/config/google_credentials.json
+/google_token.yaml

@@ -6,7 +6,7 @@ require 'fileutils'
 class GoogleSheet
   OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
   APPLICATION_NAME = 'Google Sheets'.freeze
-  CREDENTIALS_PATH = 'config/credentials.json'.freeze
+  CREDENTIALS_PATH = 'config/google_credentials.json'.freeze
   TOKEN_PATH = 'token.yaml'.freeze
   SCOPE = Google::Apis::SheetsV4::AUTH_SPREADSHEETS_READONLY
 
@@ -36,15 +36,20 @@ class GoogleSheet
 
   def self.get_sheet_array_from_google_sheet(options = {})
     service = Google::Apis::SheetsV4::SheetsService.new
-    service.client_options.application_name = APPLICATION_NAME
-    service.authorization = GoogleSheet.authorize
+    service.authorization = get_google_auth
+    response = service.get_spreadsheet_values(
+      "1oU-8DlwEgO1UiP-vGaRnp4lkMaXy8auFF-qR95XrbJw",
+      "services!A1:I1000"
+    ).values
+    # service.client_options.application_name = APPLICATION_NAME
+    # service.authorization = GoogleSheet.authorize
 
-    response = service.get_spreadsheet_values("1oU-8DlwEgO1UiP-vGaRnp4lkMaXy8auFF-qR95XrbJw", "services!A1:I1000")
+    # response = service.get_spreadsheet_values("1oU-8DlwEgO1UiP-vGaRnp4lkMaXy8auFF-qR95XrbJw", "services!A1:I1000")
     result = []
-    if response.values.empty?
+    if response.size == 0
       result << { status: "EMPTY"}
     else
-      response.values.each_with_index do |row, index|
+      response.each_with_index do |row, index|
         if index > 0
           result << {
                       tag: row[0],
@@ -61,5 +66,11 @@ class GoogleSheet
       end
     end
     return result
+  end
+
+  def self.get_google_auth
+    scope = [Google::Apis::SheetsV4::AUTH_SPREADSHEETS_READONLY]
+    file = File.open("config/google_credentials.json", 'r')
+    authorization = Google::Auth::ServiceAccountCredentials.make_creds({:json_key_io=> file, :scope => scope})
   end
 end
