@@ -163,7 +163,9 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
-    mimemagic (0.3.2)
+    mimemagic (0.4.3)
+      nokogiri (~> 1)
+      rake
     mini_mime (1.0.0)
     mini_portile2 (2.4.0)
     minitest (5.14.1)
@@ -180,7 +182,8 @@ GEM
       activerecord (>= 3.0)
     popper_js (1.14.3)
     public_suffix (3.0.2)
-    puma (3.12.6)
+    puma (4.3.8)
+      nio4r (~> 2.0)
     rack (2.2.3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -309,7 +312,7 @@ DEPENDENCIES
   kaminari
   listen (>= 3.0.5, < 3.2)
   pg (~> 0.20)
-  puma (~> 3.12)
+  puma (~> 4.3)
   rails (~> 5.1.6)
   ransack
   rest-client (~> 2.0, >= 2.0.2)
